@@ -1,18 +1,7 @@
 <template>
-  <v-form
-    ref="thisForm"
-    lazy-validation
-    @submit.prevent="validate"
-  >
-    <v-row
-      justify="center"
-      class="mb-16"
-    >
-      <v-col
-        cols="12"
-        lg="8"
-        xl="6"
-      >
+  <v-form ref="thisForm" lazy-validation @submit.prevent="validate">
+    <v-row justify="center" class="mb-16">
+      <v-col cols="12" lg="8" xl="6">
         <v-img
           src="@/assets/img/RegisterTab2.svg"
           lazy-src="@/assets/img/RegisterTab2.svg"
@@ -29,55 +18,27 @@
         label="نام پذیرنده"
         :validations="['required', 'persianAndEnghlish']"
       />
-      <Number
-        v-model="acceptor.contractCode"
-        md="4"
-        label="کد قرارداد"
-      />
-      <Number
-        v-model="acceptor.phone"
-        md="4"
-        label="تلفن ثابت"
-      />
+      <Number v-model="acceptor.contractCode" md="4" label="کد قرارداد" />
+      <Number v-model="acceptor.phone" md="4" label="تلفن ثابت" />
     </v-row>
 
     <v-row>
-      <Category
-        v-model="acceptor.category"
-        md="3"
-      />
-      <Country
-        v-model="acceptor.country"
-        md="3"
-      />
+      <Category v-model="acceptor.category" md="3" />
+      <Country v-model="acceptor.country" md="3" />
       <Province
         v-model="acceptor.state"
         md="3"
         :country-id="acceptor.country"
       />
-      <City
-        v-model="acceptor.city"
-        md="3"
-        :state-id="acceptor.state"
-      />
+      <City v-model="acceptor.city" md="3" :state-id="acceptor.state" />
     </v-row>
     <v-row>
-      <Textarea
-        v-model="acceptor.address"
-        label="آدرس دقیق محل"
-        md="6"
-      />
-      <Maps
-        :default-lat="acceptor.lat"
-        :default-lng="acceptor.lng"
-        md="6"
-      />
+      <Textarea v-model="acceptor.address" label="آدرس دقیق محل" md="6" />
+      <Maps :default-lat="acceptor.lat" :default-lng="acceptor.lng" md="6" />
     </v-row>
 
     <v-row>
-      <v-col cols="12">
-        تخفیفات آتی
-      </v-col>
+      <v-col cols="12"> تخفیفات آتی </v-col>
     </v-row>
     <v-row>
       <RangSilder
@@ -90,16 +51,14 @@
       <Number
         v-model="acceptor.futureDiscountExpire"
         label="انقضاء تخفیفات آتی"
-        class="vira-ltr "
+        class="vira-ltr"
         md="3"
         append="روز"
       />
     </v-row>
 
     <v-row>
-      <v-col cols="12">
-        کارمزد نماینده
-      </v-col>
+      <v-col cols="12"> کارمزد نماینده </v-col>
     </v-row>
     <v-row>
       <RangSilder
@@ -111,9 +70,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="12">
-        مقدار تخفیف کلی
-      </v-col>
+      <v-col cols="12"> مقدار تخفیف کلی </v-col>
     </v-row>
     <v-row>
       <RangSilder
@@ -126,18 +83,10 @@
 
     <div class="text--body-1 mb-4">
       تگ های پذیرنده
-
       <v-tooltip left>
         <template #activator="{ on, attrs }">
-          <v-btn
-            icon
-            v-bind="attrs"
-            v-on="on"
-          >
-            <IconQuestion
-              width="20"
-              height="20"
-            />
+          <v-btn icon v-bind="attrs" v-on="on">
+            <IconQuestion width="20" height="20" />
           </v-btn>
         </template>
         <span>Tooltip</span>
@@ -157,10 +106,7 @@
           @keypress.enter.prevent="pushTag"
         />
       </v-col>
-      <v-col
-        cols="12"
-        md="2"
-      >
+      <v-col cols="12" md="2">
         <v-btn
           color="primary"
           class="mt-2"
@@ -172,20 +118,11 @@
           ثبت تگ
         </v-btn>
       </v-col>
-      <v-col
-        cols="12"
-        lg="5"
-      >
-        <div
-          v-show="tagIsMax"
-          class="error--text mt-2"
-        >
+      <v-col cols="12" lg="5">
+        <div v-show="tagIsMax" class="error--text mt-2">
           {{ tagMessage }}
         </div>
-        <div
-          v-show="tagIsRepeat"
-          class="error--text mt-2"
-        >
+        <div v-show="tagIsRepeat" class="error--text mt-2">
           {{ repeatMasseage }}
         </div>
       </v-col>
@@ -198,40 +135,23 @@
           class="rounded px-3 py-2 py-md-2 mb-2 ml-2 d-inline-block"
           style="border: 1px solid #c1c1c1"
         >
-          <v-btn
-            icon
-            @click="removeTag(index)"
-          >
-            <IconRemoveCircle
-              width="20"
-              height="20"
-            />
+          <v-btn icon @click="removeTag(index)">
+            <IconRemoveCircle width="20" height="20" />
           </v-btn>
           {{ tag }}
-          <v-btn
-            icon
-            disabled
-          >
-            <IconTag
-              width="20"
-              height="20"
-            />
+          <v-btn icon disabled>
+            <IconTag width="20" height="20" />
           </v-btn>
         </span>
       </v-col>
     </v-row>
 
     <v-row>
-      <!-- <Textarea label="" md="6" v-model="acceptor.address" >
-<template v-slot:header>
-    <h1>Here might be a page title</h1>
-  </template>
-        <template v-slot:before>
-                  <div class="text--body-1 mb-4">
+      <v-col cols="12" md="6">
+        <div class="text--body-1 mb-4">
           توضیحات پذیرنده
-
           <v-tooltip left>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
                 <IconQuestion width="20" height="20" />
               </v-btn>
@@ -239,237 +159,135 @@
             <span>Tooltip</span>
           </v-tooltip>
         </div>
-        <h1>fsdfsdf</h1>
-        </template>
-      </Textarea> -->
-      <v-col
-        cols="12"
-        md="6"
-      >
-        <div class="text--body-1 mb-4">
-          توضیحات پذیرنده
-
-          <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-              >
-                <IconQuestion
-                  width="20"
-                  height="20"
-                />
-              </v-btn>
-            </template>
-            <span>Tooltip</span>
-          </v-tooltip>
-        </div>
-        <v-textarea
-          v-model="acceptor.description"
-          outlined
-        />
-      </v-col><v-col
-        cols="12"
-        md="6"
-      >
+        <v-textarea v-model="acceptor.description" outlined />
+      </v-col>
+      <v-col cols="12" md="6">
         <div class="text--body-1 mb-4">
           درباره ی پذیرنده
           <v-tooltip left>
             <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-              >
-                <IconQuestion
-                  width="20"
-                  height="20"
-                />
+              <v-btn icon v-bind="attrs" v-on="on">
+                <IconQuestion width="20" height="20" />
               </v-btn>
             </template>
             <span>Tooltip</span>
           </v-tooltip>
         </div>
-        <v-textarea
-          v-model="acceptor.about"
-          outlined
-        />
+        <v-textarea v-model="acceptor.about" outlined />
       </v-col>
     </v-row>
 
     <v-row justify="space-around">
-      <BtnBack
-        label="بازگشت"
-        dark
-        class="mt-16"
-        @click="btnBack"
-      />
-      <BtnNext
-        label="ادامه"
-        dark
-        class="mt-16"
-        type="submit"
-      />
+      <BtnBack label="بازگشت" dark class="mt-16" @click="btnBack" />
+      <BtnNext label="ادامه" dark class="mt-16" type="submit" />
     </v-row>
   </v-form>
 </template>
 
-<script>
-import { EventBus } from "@/mixins/EventBus.js";
-import Title from "@/components/Title";
-import Number from "@/components/EnglishNumber";
-import Country from "@/components/Country";
-import Province from "@/components/Province";
-import City from "@/components/City";
-import Textarea from "@/components/Textarea";
-import RangSilder from "@/components/RangSilder";
-import Category from "@/components/Category";
-import BtnNext from "@/components/BtnNext";
-import BtnBack from "@/components/BtnBack";
-import Maps from "@/components/MapEdit";
-import IconTag from "@/icons/Main/IconTag";
-import IconRemoveCircle from "@/icons/Main/IconRemoveCircle";
-import Texts from "@/components/Texts";
-import IconQuestion from "@/icons/Main/IconQuestion";
-export default {
-  name: "Accptor",
-  components: {
-    Title,
-    Number,
-    Country,
-    Province,
-    City,
-    Textarea,
-    Category,
-    IconTag,
-    IconRemoveCircle,
-    Maps,
-    RangSilder,
-    BtnNext,
-    BtnBack,
-    Texts,
-    IconQuestion,
-  },
-  data() {
-    return {
-      tag: "",
-      tempTag: "",
-      tagIsMax: false,
-      tagIsRepeat: false,
-      repeatMasseage: "تگ وارد شده تکراری میباشد",
-      tagMessage: "حداکثر ۶ عدد تگ مجاز است.",
-      acceptor: {
-        name: "",
-        description: "",
-        about: "",
-        futureDiscount: 0,
-        futureDiscountExpire: "",
-        agentWage: 0,
-        discount: 0,
-        category: 0,
-        contractCode: "",
-        country: 0,
-        address: "",
-        phone: "",
-        state: 0,
-        city: 0,
-        tags: [],
-        lat: "5667495.121918411",
-        lng: "4267897.304159825",
-      },
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { EventBus } from "@/mixins/EventBus"; // Ensure EventBus is compatible with Vue 3
+import Title from "@/components/Title.vue";
+import Number from "@/components/EnglishNumber.vue";
+import Country from "@/components/Country.vue";
+import Province from "@/components/Province.vue";
+import City from "@/components/City.vue";
+import Textarea from "@/components/Textarea.vue";
+import RangSilder from "@/components/RangSilder.vue";
+import Category from "@/components/Category.vue";
+import BtnNext from "@/components/BtnNext.vue";
+import BtnBack from "@/components/BtnBack.vue";
+import Maps from "@/components/MapEdit.vue";
+import IconTag from "@/icons/Main/IconTag.vue";
+import IconRemoveCircle from "@/icons/Main/IconRemoveCircle.vue";
+import Texts from "@/components/Texts.vue";
+import IconQuestion from "@/icons/Main/IconQuestion.vue";
 
-      rules: {
-        tags: (v) =>
-          this.acceptor.tags.length > 0 || !!v || "این فیلد الزامی است",
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
-  mounted() {
-    EventBus.$on("selectLatLng", (data) => {
-      this.acceptor.lat = data.lat;
-      this.acceptor.lng = data.lng;
-    });
-  },
-  methods: {
-    //////////////////////////////////
-    // Start Tag methods
-    pushTag() {
-      this.tagIsRepeat = false;
-      this.tagIsMax = false;
+const thisForm = ref<any>(null);
+const tempTag = ref<string>("");
+const tagIsMax = ref<boolean>(false);
+const tagIsRepeat = ref<boolean>(false);
+const repeatMasseage = ref<string>("تگ وارد شده تکراری میباشد");
+const tagMessage = ref<string>("حداکثر ۶ عدد تگ مجاز است.");
 
-      if (this.acceptor.tags.length > 5) {
-        this.tagIsMax = true;
-        return;
-      }
+const acceptor = ref({
+  name: "",
+  description: "",
+  about: "",
+  futureDiscount: 0,
+  futureDiscountExpire: "",
+  agentWage: 0,
+  discount: 0,
+  category: 0,
+  contractCode: "",
+  country: 0,
+  address: "",
+  phone: "",
+  state: 0,
+  city: 0,
+  tags: [] as string[],
+  lat: "5667495.121918411",
+  lng: "4267897.304159825",
+});
 
-      if (this.acceptor.tags.includes(this.tempTag)) {
-        this.tagIsRepeat = true;
-        return;
-      }
+const rules = {
+  tags: (v: any) =>
+    acceptor.value.tags.length > 0 || !!v || "این فیلد الزامی است",
+  required: (value: any) => !!value || "این فیلد الزامی است",
+};
 
-      if (this.tempTag != "" && !this.acceptor.tags.includes(this.tempTag))
-        this.acceptor.tags.push(this.tempTag);
+onMounted(() => {
+  EventBus.on("selectLatLng", (data: { lat: string; lng: string }) => {
+    acceptor.value.lat = data.lat;
+    acceptor.value.lng = data.lng;
+  });
+});
 
-      this.tempTag = "";
-    },
+const pushTag = () => {
+  tagIsRepeat.value = false;
+  tagIsMax.value = false;
 
-    removeTag(index) {
-      this.acceptor.tags.splice(index, 1);
-    },
-    //  End  Tag methods
+  if (acceptor.value.tags.length > 5) {
+    tagIsMax.value = true;
+    return;
+  }
 
-    // //////////////////////////////////
-    // // Start map start onclick
+  if (acceptor.value.tags.includes(tempTag.value)) {
+    tagIsRepeat.value = true;
+    return;
+  }
 
-    // stratMap() {
-    //   this.$emit("startMap");
-    // },
-    // //  End  map start onclick
-    // //////////////////////////////////
+  if (tempTag.value !== "" && !acceptor.value.tags.includes(tempTag.value)) {
+    acceptor.value.tags.push(tempTag.value);
+  }
 
-    //////////////////////////////////
-    // Start check form validation
+  tempTag.value = "";
+};
 
-    validate() {
-      if (this.$refs.thisForm.validate()) {
-        this.assign();
-      }
-    },
+const removeTag = (index: number) => {
+  acceptor.value.tags.splice(index, 1);
+};
 
-    //  End  check form validation
-    //////////////////////////////////
+const validate = () => {
+  if (thisForm.value.validate()) {
+    assign();
+  }
+};
 
-    //////////////////////////////////
-    // Start send data to Parent data
-    assign() {
-      this.$parent.$parent.create = {
-        ...this.$parent.$parent.create,
-        ...this.acceptor,
-      };
-      this.btnNext();
-    },
-    //  End send data to Parent data
-    //////////////////////////////////
-    //////////////////////////////////
-    // Start brn next form
-    btnNext() {
-      this.$parent.$parent.step = 4;
-      window.scrollTo(0, 0);
-    },
-    //  End  brn next form
-    //////////////////////////////////
+const assign = () => {
+  const parentData = (parent as any).create;
+  parentData.value = { ...parentData.value, ...acceptor.value };
+  btnNext();
+};
 
-    //////////////////////////////////
-    // Start brn next form
-    btnBack() {
-      this.$parent.$parent.step = 2;
-      window.scrollTo(0, 0);
-    },
-    //  End  brn next form
-    //////////////////////////////////
-  },
+const btnNext = () => {
+  (parent as any).step = 4;
+  window.scrollTo(0, 0);
+};
+
+const btnBack = () => {
+  (parent as any).step = 2;
+  window.scrollTo(0, 0);
 };
 </script>
 
