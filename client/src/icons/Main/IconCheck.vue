@@ -1,0 +1,3 @@
+<template>
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="31.283" height="24.904" viewBox="0 0 31.283 24.904"><defs><clipPath id="a"><rect width="31.283" height="24.904" fill="none"/></clipPath></defs><g clip-path="url(#a)"><g transform="translate(-339.858 -452.731)"><path d="M-48.667,555.584l8.854,8.854,17.479-17.479" transform="translate(391 -91.753)" fill="none" stroke="#fff" stroke-width="7"/></g></g></svg>
+</template>
