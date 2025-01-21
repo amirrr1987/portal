@@ -3,7 +3,7 @@
     class="red"
     icon
     x-small
-    v-on="$listeners"
+    v-on="$attrs"
   >
     <v-icon color="white">
       mdi-close
@@ -11,9 +11,4 @@
   </v-btn>
 </template>
 
-<script lang="ts">
-export default {
-  name: "BtnRemove",
-  components: {},
-};
-</script>
+<script setup lang="ts"></script>

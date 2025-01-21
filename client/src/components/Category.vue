@@ -1,10 +1,10 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
   >
     <v-select
       :items="categories"
@@ -13,48 +13,51 @@
       label="صنف"
       :rules="[rules.required]"
       required
-      :value="value"
-      @input="$emit('input', $event)"
+      :model-value="props.value"
+      @update:model-value="(value) => emit('update:modelValue', value)"
     />
   </v-col>
 </template>
 
-<script lang="ts">
-export default {
-  name: "Category",
+<script setup lang="ts">
+import { ref, onMounted, computed } from "vue";
 
-  props: {
-    value: { type: Number, default: null },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      allCategory: [
+// Define the props
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  cols: "12",
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
+});
 
-      ],
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
-  computed: {
-    categories() {
-      return this.allCategory.filter((item) => item.stateId == this.stateId);
-    },
-  },
+// Define the emit function
+const emit = defineEmits(["update:modelValue"]);
 
+// Define reactive data
+const allCategory = ref<Array<{ _id: number; title: string; stateId: number }>>(
+  []
+);
 
-
-  mounted() {
-    this.$http.get(`${process.env.VUE_APP_API_CATEGORY}`).then((res) => {
-      this.allCategory = res.data.data;
-    });
-  },
-
-
+// Define rules
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
 };
+
+// Computed property for filtered categories
+const categories = computed(() => {
+  return allCategory.value.filter((item) => item.stateId === stateId.value);
+});
+
+// Fetch categories on mount
+onMounted(async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_APP_API_CATEGORY}`);
+    const data = await response.json();
+    allCategory.value = data.data;
+  } catch (error) {
+    console.error("Failed to fetch categories:", error);
+  }
+});
 </script>

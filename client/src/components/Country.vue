@@ -1,10 +1,10 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
   >
     <v-select
       :items="allCountry"
@@ -13,36 +13,44 @@
       label="کشور"
       :rules="[rules.required]"
       required
-      :value="value"
-      @input="$emit('input', $event)"
+      :model-value="props.value"
+      @update:model-value="(event) => emit('update:model-value', event)"
     />
   </v-col>
 </template>
 
-<script lang="ts">
-export default {
-  name: "Country",
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
 
-  props: {
-    value: { type: Number, default: null },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      allCountry: [],
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
-  mounted() {
-    this.$http.get(process.env.VUE_APP_API_COUNTRY).then((res) => {
-      this.allCountry = res.data;
-    });
-  },
+interface Props {
+  value?: number | null;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const emit = defineEmits(["update:model-value"]);
+
+const allCountry = ref<Array<{ id: number; name: string }>>([]);
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
 };
+
+onMounted(async () => {
+  const { get } = useHttp();
+  const response = await get(import.meta.env.VITE_APP_API_COUNTRY); // Replace with your environment variable
+  allCountry.value = response.data;
+});
 </script>

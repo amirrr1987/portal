@@ -1,26 +1,38 @@
 <template>
   <v-card
-    :color="color"
+    :color="props.color"
     dark
     width="200"
     height="50"
     class="d-flex align-center justify-center position-absolute"
     tile
-    style="top: -20px; right: -20px; cursor: default;"
+    :style="cardStyle"
   >
-    {{ label }}
+    {{ props.label }}
   </v-card>
 </template>
 
-<script lang="ts">
-export default {
-  name: "CardTitle",
-  props: {
-    color: { type: String, default: null },
-    label: { type: String, default: "عنوان" },
-  },
+<script setup lang="ts">
+interface Props {
+  color?: string;
+  label?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  color: null,
+  label: "عنوان",
+});
+
+const cardStyle = {
+  top: "-20px",
+  right: "-20px",
+  cursor: "default",
 };
 </script>
+
+<style scoped>
+/* استایل‌های مورد نیاز */
+</style>
 <style lang="scss">
 .card-title {
   top: -25px;

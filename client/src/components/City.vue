@@ -1,10 +1,10 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
   >
     <v-select
       :items="cities"
@@ -13,42 +13,50 @@
       label="شهر"
       :rules="[rules.required]"
       required
-      :value="value"
-      @input="$emit('input', $event)"
+      :model-value="props.value"
+      @update:model-value="(event) => emit('update:model-value', event)"
     />
   </v-col>
 </template>
 
-<script lang="ts">
-export default {
-  name: "City",
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
 
-  props: {
-    value: { type: Number, default: null },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-    stateId: { type: Number, default: null },
-  },
-  data() {
-    return {
-      allCities: [],
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
-  computed: {
-    cities() {
-      return this.allCities.filter((item) => item.stateId == this.stateId);
-    },
-  },
-  mounted() {
-    this.$http.get(process.env.VUE_APP_API_CITY).then((res) => {
-      this.allCities = res.data;
-    });
-  },
+interface Props {
+  value?: number | null;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+  stateId?: number | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+  stateId: null,
+});
+
+const emit = defineEmits(["update:model-value"]);
+
+const allCities = ref<Array<{ id: number; name: string; stateId: number }>>([]);
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
 };
+
+const cities = computed(() => {
+  return allCities.value.filter((item) => item.stateId === props.stateId);
+});
+
+onMounted(async () => {
+  const { get } = useHttp();
+  const response = await get(import.meta.env.VITE_APP_API_CITY); // Replace with your environment variable
+  allCities.value = response.data;
+});
 </script>
