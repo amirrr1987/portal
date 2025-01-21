@@ -10,11 +10,10 @@
         >
           <v-text-field
             outlined
-            :value="value"
-            @input="$emit('input', v)"
-            v-on="$listeners"
-            @keypress.enter.prevent="pushTag"
+            :value="tempTag"
             :rules="[rules.tags]"
+            @input="onInputTag"
+            @keypress.enter.prevent="pushTag"
           />
         </v-col>
         <v-col cols="12" md="2">
@@ -30,20 +29,20 @@
           </v-btn>
         </v-col>
         <v-col cols="12" lg="5">
-          <div class="error--text mt-2" v-show="tagIsMax">
+          <div v-show="tagIsMax" class="error--text mt-2">
             {{ tagMessage }}
           </div>
-          <div class="error--text mt-2" v-show="tagIsRepeat">
-            {{ repeatMasseage }}
+          <div v-show="tagIsRepeat" class="error--text mt-2">
+            {{ repeatMessage }}
           </div>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12">
           <span
-            class="border border-gray3 border-size-2 rounded px-3 py-2 py-md-2 mb-2 ml-2 d-inline-block"
-            v-for="(tag, index) in acceptor.tags"
+            v-for="(tag, index) in tags"
             :key="index"
+            class="border border-gray3 border-size-2 rounded px-3 py-2 py-md-2 mb-2 ml-2 d-inline-block"
           >
             <v-btn icon @click="removeTag(index)">
               <IconRemoveCircle width="20" height="20" />
@@ -59,64 +58,64 @@
   </v-row>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from "vue";
 import IconTag from "@/icons/Main/IconTag";
 import IconRemoveCircle from "@/icons/Main/IconRemoveCircle";
-export default {
-  name: "Tags",
-  components: {
-    IconTag,
-    IconRemoveCircle,
-  },
-  props: {
-    value: { type: String, default: null },
-  },
-  data() {
-    return {
-      acceptor: {
-        tags: [],
-      },
-      tag: "",
-      tempTag: "",
-      tagIsMax: false,
-      tagIsRepeat: false,
-      repeatMasseage: "تگ وارد شده تکراری میباشد",
-      tagMessage: "حداکثر ۶ عدد تگ مجاز است.",
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-        tags: () => this.acceptor.tags.length > 0 || "این فیلد الزامی است",
-      },
-    };
-  },
-  methods: {
-    //////////////////////////////////
-    // Start Tag methods
-    pushTag() {
-      this.tagIsRepeat = false;
-      this.tagIsMax = false;
 
-      if (this.acceptor.tags.length > 5) {
-        this.tagIsMax = true;
-        return;
-      }
+interface Props {
+  value?: string;
+}
 
-      if (this.acceptor.tags.includes(this.tempTag)) {
-        this.tagIsRepeat = true;
-        return;
-      }
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+});
 
-      if (this.tempTag != "" && !this.acceptor.tags.includes(this.tempTag))
-        this.acceptor.tags.push(this.tempTag);
+const emit = defineEmits<{
+  (event: "update:value", value: string): void;
+  (event: "update:tags", tags: string[]): void;
+}>();
 
-      this.tempTag = "";
+const tags = ref<string[]>([]);
+const tempTag = ref<string>("");
+const tagIsMax = ref<boolean>(false);
+const tagIsRepeat = ref<boolean>(false);
+const repeatMessage = "تگ وارد شده تکراری میباشد";
+const tagMessage = "حداکثر ۶ عدد تگ مجاز است.";
 
-    },
-    removeTag(index) {
-      this.acceptor.tags.splice(index, 1);
-    },
-    //  End  Tag methods
-  },
+const rules = {
+  tags: () => tags.value.length > 0 || "این فیلد الزامی است",
+};
+
+const pushTag = () => {
+  tagIsRepeat.value = false;
+  tagIsMax.value = false;
+
+  if (tags.value.length > 5) {
+    tagIsMax.value = true;
+    return;
+  }
+
+  if (tags.value.includes(tempTag.value)) {
+    tagIsRepeat.value = true;
+    return;
+  }
+
+  if (tempTag.value && !tags.value.includes(tempTag.value)) {
+    tags.value.push(tempTag.value);
+    emit("update:tags", tags.value);
+  }
+
+  tempTag.value = "";
+};
+
+const removeTag = (index: number) => {
+  tags.value.splice(index, 1);
+  emit("update:tags", tags.value);
+};
+
+const onInputTag = (value: string) => {
+  tempTag.value = value;
+  emit("update:value", value);
 };
 </script>
-
-<style></style>
