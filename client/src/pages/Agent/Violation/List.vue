@@ -10,7 +10,7 @@
     :loading="isLoading"
     loading-text="در حال بار گذاری ..."
   >
-    <template v-slot:top>
+    <template #top>
       <div style="background-color: #e9e9e9; position: relative">
         <CardTitle label="لیست تخلفات" color="#ef3f3f" />
         <v-row>
@@ -32,11 +32,11 @@
       </div>
     </template>
 
-    <template v-slot:item.createdAt="{createdAt}">
-      {{ jalali(createdAt) }}
+    <template #item.createdAt="{ item }">
+      {{ jalali(item.createdAt) }}
     </template>
 
-    <template v-slot:item.status="{ item }">
+    <template #item.status="{ item }">
       <span v-show="item.status == -1" class="red--text text--accent-2"
         >رسیدگی نشده</span
       >
@@ -48,11 +48,11 @@
       >
     </template>
 
-    <template v-slot:item.action="{ item }">
+    <template #item.action="{ item }">
       <v-row justify="center">
         <v-col cols="12" md="10" lg="8" xl="6">
           <v-row>
-            <ActionBtn iconEye lg="3" />
+            <ActionBtn iconEye lg="3" @click="viewItem(item)" />
             <ActionBtn v-if="item.submission == 1" iconCheck lg="3" />
             <ActionBtn v-if="item.submission == 0" iconRemove lg="3" />
             <ActionBtn v-if="item.submission == -1" iconRemove lg="3" />
@@ -63,7 +63,7 @@
       </v-row>
     </template>
 
-    <template v-slot:footer>
+    <template #footer>
       <div class="vira-data-table-footer">
         <Pagination :length="paginationCount" v-model="listPage" />
         <SnackbarSuccess v-model="snackbarSuccess" />
@@ -74,136 +74,121 @@
   </v-data-table>
 </template>
 
-<script>
-import CardTitle from "@/components/CardTitle";
-import BtnTableHelp from "@/components/BtnTableHelp";
-import ActionBtn from "@/components/ActionBtn";
-import Pagination from "@/components/Pagination";
-import SnackbarSuccess from "@/components/SnackbarSuccess";
-import SnackbarError from "@/components/SnackbarError";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import { useRouter } from "vue-router";
 import jalali from "moment-jalaali";
+import CardTitle from "@/components/CardTitle.vue";
+import BtnTableHelp from "@/components/BtnTableHelp.vue";
+import ActionBtn from "@/components/ActionBtn.vue";
+import Pagination from "@/components/Pagination.vue";
+import SnackbarSuccess from "@/components/SnackbarSuccess.vue";
+import SnackbarError from "@/components/SnackbarError.vue";
 
-export default {
-  name: "List",
-  components: {
-    CardTitle,
-    BtnTableHelp,
-    ActionBtn,
-    Pagination,
-    SnackbarSuccess,
-    SnackbarError,
+const router = useRouter();
+const { get, delete: deleteRequest } = useHttp();
+
+const listCounts = ref([5, 10, 20, 50, 100]);
+const listSearch = ref<string | null>(null);
+const listPage = ref(1);
+const listCount = ref(5);
+const isLoading = ref(false);
+const snackbarSuccess = ref(false);
+const snackbarError = ref(false);
+const tableHeader = ref([
+  {
+    text: "نام پذیرنده",
+    value: "accepter.name",
+    align: "center",
   },
-  data() {
-    return {
-      listCounts: [5, 10, 20, 50, 100],
-      listSearch: null,
-      listPage: 1,
-      listCount: 5,
-      isLoading: false,
-      snackbarSuccess: false,
-      snackbarError: false,
-      tableHeader: [
-        {
-          text: "نام پذیرنده",
-          value: "accepter.name",
-          align: "center",
-        },
-        {
-          text: "موضوع",
-          value: "title",
-          align: "center",
-        },
-        {
-          text: "وضعیت",
-          value: "status",
-          align: "center",
-        },
-        {
-          text: "زمان ثبت تخلف",
-          value: "createdAt",
-          align: "center",
-        },
-
-        {
-          text: "عملیات",
-          value: "action",
-          align: "center",
-          sortable: false,
-        },
-      ],
-      tableData: [],
-    };
+  {
+    text: "موضوع",
+    value: "title",
+    align: "center",
   },
-
-  methods: {
-    checkIsLoading() {
-      this.tableData.length == 0
-        ? (this.isLoading = true)
-        : (this.isLoading = false);
-    },
-    jalali(str) {
-      return jalali(str).format("jYYYY/jM/jD");
-    },
-    deleteItem(item) {
-      this.$http
-        .delete(`${this.$privateKey}/violation/${item._id}`)
-        .then((res) => {
-          item.deleteDialog = false;
-
-          this.checkIsLoading();
-          this.snackbarSuccess = true;
-          return res;
-        })
-        .catch((err) => {
-          this.snackbarError = true;
-          return err;
-        });
-    },
-    editItem(item) {
-      this.$router.push(`/agent/violation/${item._id}/edit`);
-    },
-    viewItem(item) {
-      this.$router.push(`/agent/violation/${item._id}/view`);
-    },
-    getTableData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(process.env.VUE_APP_API_VIOLATION)
-          .then((res) => {
-            this.tableData = res.data.data;
-            console.log(res.data.data);
-
-            resolve(res);
-          })
-          .catch((err) => {
-            this.snackbarError = true;
-            reject(err);
-          });
-      });
-    },
+  {
+    text: "وضعیت",
+    value: "status",
+    align: "center",
   },
-  computed: {
-    paginationCount() {
-      let pageCount = this.tableData.length / this.listCount;
-      let pageCountRound = Math.ceil(pageCount);
-      return pageCountRound;
-    },
-
-    listCountsComputed() {
-      let listCountFiltered = [];
-      listCountFiltered = this.listCounts.filter(
-        (item) => item <= this.tableData.length
-      );
-
-      if (this.tableData.length % 5 > 0 && 50 >= this.tableData.length) {
-        listCountFiltered.push(this.listCounts[listCountFiltered.length]);
-      }
-      return listCountFiltered;
-    },
+  {
+    text: "زمان ثبت تخلف",
+    value: "createdAt",
+    align: "center",
   },
-
-  async created() {
-    await this.getTableData();
+  {
+    text: "عملیات",
+    value: "action",
+    align: "center",
+    sortable: false,
   },
+]);
+const tableData = ref<any[]>([]);
+
+const paginationCount = computed(() => {
+  const pageCount = tableData.value.length / listCount.value;
+  return Math.ceil(pageCount);
+});
+
+const listCountsComputed = computed(() => {
+  const filtered = listCounts.value.filter(
+    (item) => item <= tableData.value.length
+  );
+  if (tableData.value.length % 5 > 0 && 50 >= tableData.value.length) {
+    filtered.push(listCounts.value[filtered.length]);
+  }
+  return filtered;
+});
+
+const checkIsLoading = () => {
+  isLoading.value = tableData.value.length === 0;
 };
+
+const jalaliDate = (date: string) => {
+  return jalali(date).format("jYYYY/jM/jD");
+};
+
+const deleteItem = async (item: any) => {
+  try {
+    await deleteRequest(
+      `${import.meta.env.VITE_APP_PRIVATE_KEY}/violation/${item._id}`
+    );
+    tableData.value = tableData.value.filter((i) => i._id !== item._id);
+    snackbarSuccess.value = true;
+  } catch (error) {
+    snackbarError.value = true;
+  }
+};
+
+const editItem = (item: any) => {
+  router.push(`/agent/violation/${item._id}/edit`);
+};
+
+const viewItem = (item: any) => {
+  router.push(`/agent/violation/${item._id}/view`);
+};
+
+const getTableData = async () => {
+  try {
+    const response = await get(import.meta.env.VITE_APP_API_VIOLATION);
+    tableData.value = response.data.data;
+    checkIsLoading();
+  } catch (error) {
+    snackbarError.value = true;
+  }
+};
+
+onMounted(async () => {
+  await getTableData();
+});
 </script>
+
+<style>
+.vira-data-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+</style>

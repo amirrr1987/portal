@@ -9,14 +9,14 @@ import { createRouter, createWebHistory } from "vue-router/auto";
 import { setupLayouts } from "virtual:generated-layouts";
 // import { routes } from 'vue-router/auto-routes'
 import Auth from "@/router/src/Auth";
-// import Admin from "@/router/src/Admin";
+import Admin from "@/router/src/Admin";
 // import Agent from "@/router/src/Agent";
 // import Acceptor from "@/router/src/Acceptor";
 // import User from "@/router/src/User";
 
 const routes = [
   ...Auth,
-  // ...Admin,
+  ...Admin,
   // ...Agent,
   // ...Acceptor,
   // ...User

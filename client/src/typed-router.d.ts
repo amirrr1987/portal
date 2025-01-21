@@ -192,6 +192,6 @@ declare module 'vue-router/auto-routes' {
     '/User/src/HighestScore': RouteRecordInfo<'/User/src/HighestScore', '/User/src/HighestScore', Record<never, never>, Record<never, never>>,
     '/User/src/LastAcceptors': RouteRecordInfo<'/User/src/LastAcceptors', '/User/src/LastAcceptors', Record<never, never>, Record<never, never>>,
     '/User/src/RelatedAcceptors': RouteRecordInfo<'/User/src/RelatedAcceptors', '/User/src/RelatedAcceptors', Record<never, never>, Record<never, never>>,
-    '/User/src/Silder': RouteRecordInfo<'/User/src/Silder', '/User/src/Silder', Record<never, never>, Record<never, never>>,
+    '/User/src/Slider': RouteRecordInfo<'/User/src/Slider', '/User/src/Slider', Record<never, never>, Record<never, never>>,
   }
 }

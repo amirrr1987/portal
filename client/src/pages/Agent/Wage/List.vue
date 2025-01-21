@@ -10,7 +10,7 @@
     :loading="isLoading"
     loading-text="در حال بار گذاری ..."
   >
-    <template v-slot:top>
+    <template #top>
       <div style="background-color: #e9e9e9; position: relative">
         <CardTitle label="کارمزد های دریافتی" color="#689e32" />
         <v-row>
@@ -32,19 +32,19 @@
       </div>
     </template>
 
-    <template v-slot:item.name="{ item }">
+    <template #item.name="{ item }">
       <a class="vira-fa" @click.prevent="viewItem(item)">{{ item.name }}</a>
     </template>
 
-    <template v-slot:item.username="{ item }">
+    <template #item.username="{ item }">
       <span class="vira-en">{{ item.username }}</span>
     </template>
 
-    <template v-slot:item.city="{ item }">
+    <template #item.city="{ item }">
       <span class="vira-fa">{{ item.city.name }}</span>
     </template>
 
-    <template v-slot:item.status="{ item }">
+    <template #item.status="{ item }">
       <span v-show="item.status == -1" class="vira-fa red--text text--accent-2"
         >رسیدگی نشده</span
       >
@@ -60,7 +60,7 @@
       >
     </template>
 
-    <template v-slot:item.action="{ item }">
+    <template #item.action="{ item }">
       <v-row justify="center">
         <v-col cols="12">
           <v-row>
@@ -75,7 +75,7 @@
       </v-row>
     </template>
 
-    <template v-slot:footer>
+    <template #footer>
       <div class="vira-data-table-footer">
         <Pagination :length="paginationCount" v-model="listPage" />
         <SnackbarSuccess v-model="snackbarSuccess" />
@@ -86,156 +86,148 @@
   </v-data-table>
 </template>
 
-<script>
-import CardTitle from "@/components/CardTitle";
-import BtnTableHelp from "@/components/BtnTableHelp";
-import ActionBtn from "@/components/ActionBtn";
-import Pagination from "@/components/Pagination";
-import SnackbarSuccess from "@/components/SnackbarSuccess";
-import SnackbarError from "@/components/SnackbarError";
-export default {
-  name: "List",
-  components: {
-    CardTitle,
-    BtnTableHelp,
-    ActionBtn,
-    Pagination,
-    SnackbarSuccess,
-    SnackbarError,
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import { useRouter } from "vue-router";
+import CardTitle from "@/components/CardTitle.vue";
+import BtnTableHelp from "@/components/BtnTableHelp.vue";
+import ActionBtn from "@/components/ActionBtn.vue";
+import Pagination from "@/components/Pagination.vue";
+import SnackbarSuccess from "@/components/SnackbarSuccess.vue";
+import SnackbarError from "@/components/SnackbarError.vue";
+
+const router = useRouter();
+const { get, delete: deleteRequest } = useHttp();
+
+const listCounts = ref([5, 10, 20, 50, 100]);
+const listSearch = ref<string | null>(null);
+const listPage = ref(1);
+const listCount = ref(5);
+const isLoading = ref(false);
+const snackbarSuccess = ref(false);
+const snackbarError = ref(false);
+const tableHeader = ref([
+  {
+    text: "پذیرنده",
+    value: "name",
+    align: "center",
   },
-  data() {
-    return {
-      listCounts: [5, 10, 20, 50, 100],
-      listSearch: null,
-      listPage: 1,
-      listCount: 5,
-      isLoading: false,
-      snackbarSuccess: false,
-      snackbarError: false,
-      tableHeader: [
-        {
-          text: "پذیرنده",
-          value: "name",
-          align: "center",
-        },
-        {
-          text: "کد پذیرنده",
-          value: "username",
-          align: "center",
-        },
-        {
-          text: "مبلغ تراکنش (ریال)",
-          value: "city",
-          align: "center",
-        },
-        {
-          text: "کارمزد شما (ریال)",
-          value: "accepters.length",
-          align: "center",
-        },
-        {
-          text: "تاریخ و ساعت",
-          value: "accepters.length",
-          align: "center",
-        },
-        {
-          text: "وضعیت",
-          value: "status",
-          align: "center",
-        },
-
-        {
-          text: "عملیات",
-          value: "action",
-          align: "center",
-          sortable: false,
-        },
-      ],
-      tableData: [],
-    };
+  {
+    text: "کد پذیرنده",
+    value: "username",
+    align: "center",
   },
-
-  methods: {
-    checkIsLoading() {
-   
-      if (this.tableData.length == 0) {
-        setTimeout(() => {
-          this.isLoading = false;
-        }, 3000);
-      }
-    },
-    filterCity() {
-      this.tableData.forEach((item) => {
-        item.city = this.allCities.find((city) => city.id == item.city);
-      });
-    },
-    filterItem(item) {
-      this.tableData = this.tableData.filter((single) => single._id != item);
-    },
-    deleteItem(item) {
-      this.$http
-        .delete(`${this.$privateKey}/agent/${item}`)
-        .then((res) => {
-          this.filterItem(item);
-          // this.checkIsLoading();
-          // this.snackbarSuccess = true;
-          return res;
-        })
-        .catch((err) => {
-          this.snackbarError = true;
-          return err;
-        });
-    },
-    editItem(item) {
-      this.$router.push(`/admin/agent/${item._id}/edit`);
-    },
-    viewItem(item) {
-      this.$router.push(`/admin/agent/${item._id}/view`);
-    },
-    getTableData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(`${this.$privateKey}/agent`)
-          .then((res) => {
-            this.tableData = res.data.ASREVIRA.docs;
-            this.checkIsLoading();
-            this.filterCity();
-            // this.snackbarSuccess = true;
-            resolve(res);
-          })
-          .catch((err) => {
-            this.snackbarError = true;
-            reject(err);
-          });
-      });
-    },
+  {
+    text: "مبلغ تراکنش (ریال)",
+    value: "city",
+    align: "center",
   },
-  computed: {
-    paginationCount() {
-      let pageCount = this.tableData.length / this.listCount;
-      let pageCountRound = Math.ceil(pageCount);
-      return pageCountRound;
-    },
-
-    listCountsComputed() {
-      let listCountFiltered = [];
-      listCountFiltered = this.listCounts.filter(
-        (item) => item <= this.tableData.length
-      );
-
-      if (this.tableData.length % 5 > 0 && 50 >= this.tableData.length) {
-        listCountFiltered.push(this.listCounts[listCountFiltered.length]);
-      }
-      return listCountFiltered;
-    },
+  {
+    text: "کارمزد شما (ریال)",
+    value: "accepters.length",
+    align: "center",
   },
-
-  async created() {
-    await this.$http.get(`${process.env.VUE_APP_API_CITY}`).then((res) => {
-      this.allCities = res.data;
-    });
-
-    await this.getTableData();
+  {
+    text: "تاریخ و ساعت",
+    value: "accepters.length",
+    align: "center",
   },
+  {
+    text: "وضعیت",
+    value: "status",
+    align: "center",
+  },
+  {
+    text: "عملیات",
+    value: "action",
+    align: "center",
+    sortable: false,
+  },
+]);
+const tableData = ref<any[]>([]);
+const allCities = ref<any[]>([]);
+
+const paginationCount = computed(() => {
+  const pageCount = tableData.value.length / listCount.value;
+  return Math.ceil(pageCount);
+});
+
+const listCountsComputed = computed(() => {
+  const filtered = listCounts.value.filter(
+    (item) => item <= tableData.value.length
+  );
+  if (tableData.value.length % 5 > 0 && 50 >= tableData.value.length) {
+    filtered.push(listCounts.value[filtered.length]);
+  }
+  return filtered;
+});
+
+const checkIsLoading = () => {
+  if (tableData.value.length === 0) {
+    setTimeout(() => {
+      isLoading.value = false;
+    }, 3000);
+  }
 };
+
+const filterCity = () => {
+  tableData.value.forEach((item) => {
+    item.city = allCities.value.find((city) => city.id === item.city);
+  });
+};
+
+const filterItem = (itemId: string) => {
+  tableData.value = tableData.value.filter((item) => item._id !== itemId);
+};
+
+const deleteItem = async (itemId: string) => {
+  try {
+    await deleteRequest(
+      `${import.meta.env.VITE_APP_PRIVATE_KEY}/agent/${itemId}`
+    );
+    filterItem(itemId);
+    snackbarSuccess.value = true;
+  } catch (error) {
+    snackbarError.value = true;
+  }
+};
+
+const editItem = (item: any) => {
+  router.push(`/admin/agent/${item._id}/edit`);
+};
+
+const viewItem = (item: any) => {
+  router.push(`/admin/agent/${item._id}/view`);
+};
+
+const getTableData = async () => {
+  try {
+    const response = await get(`${import.meta.env.VITE_APP_PRIVATE_KEY}/agent`);
+    tableData.value = response.data.ASREVIRA.docs;
+    checkIsLoading();
+    filterCity();
+  } catch (error) {
+    snackbarError.value = true;
+  }
+};
+
+onMounted(async () => {
+  try {
+    const response = await get(`${import.meta.env.VITE_APP_API_CITY}`);
+    allCities.value = response.data;
+    await getTableData();
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+  }
+});
 </script>
+
+<style>
+.vira-data-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+}
+</style>
