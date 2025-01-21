@@ -1,9 +1,6 @@
 <template>
   <v-card class="pa-16 grey--text text--darken-2">
-    <CardTitle
-      label="اطلاعات پذیرنده"
-      color="#08b5dd"
-    />
+    <CardTitle label="اطلاعات پذیرنده" color="#08b5dd" />
     <v-row>
       <Title
         label="مشخصات مالک"
@@ -14,144 +11,59 @@
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
+      <v-col cols="12" md="4">
         نام و نام خانوادگی : {{ itemDataUser.name }}
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        نام پدر : {{ itemDataUser.fatherName }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
+      <v-col cols="12" md="4"> نام پدر : {{ itemDataUser.fatherName }} </v-col>
+      <v-col cols="12" md="4">
         تاریخ تولد : {{ itemDataUser.birthdate }}
       </v-col>
     </v-row>
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        کد ملی : {{ itemDataUser.nationalCode }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
+      <v-col cols="12" md="4"> کد ملی : {{ itemDataUser.nationalCode }} </v-col>
+      <v-col cols="12" md="4">
         شماره شناسنامه : {{ itemDataUser.certificateNumber }}
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
+      <v-col cols="12" md="4">
         جنسیت :
-
         <span v-show="itemDataUser.gender == 0">مرد</span>
         <span v-show="itemDataUser.gender == 1">زن</span>
       </v-col>
     </v-row>
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        کشور : {{ itemDataUser.country.name }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        استان : {{ itemDataUser.state.name }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        شهر : {{ itemDataUser.city.name }}
+      <v-col cols="12" md="4"> کشور : {{ itemDataUser.country.name }} </v-col>
+      <v-col cols="12" md="4"> استان : {{ itemDataUser.state.name }} </v-col>
+      <v-col cols="12" md="4"> شهر : {{ itemDataUser.city.name }} </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col cols="12" md="4"> شماره همراه : {{ itemDataUser.mobile }} </v-col>
+      <v-col cols="12" md="4"> شماره ثابت : {{ itemDataUser.phone }} </v-col>
+      <v-col cols="12" md="4">
+        ایمیل : <span class="vira-en">{{ itemDataUser.email }}</span>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        شماره همراه :
-        {{ itemDataUser.mobile }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        شماره ثابت :
-        {{ itemDataUser.phone }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        ایمیل :
-        <span class="vira-en">{{ itemDataUser.email }}</span>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col
-        cols="12"
-        md="8"
-        class="d-flex"
-      >
+      <v-col cols="12" md="8" class="d-flex">
         <v-row>
-          <v-col
-            cols="12"
-            md="2"
-            class="px-0"
-          >
-            آدرس منزل :
-          </v-col>
-          <v-col
-            cols="12"
-            md="10"
-            class="px-0"
-          >
+          <v-col cols="12" md="2" class="px-0"> آدرس منزل : </v-col>
+          <v-col cols="12" md="10" class="px-0">
             {{ itemDataUser.address }}
           </v-col>
         </v-row>
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        کد پستی :
-        {{ itemDataUser.postalCode }}
-      </v-col>
+      <v-col cols="12" md="4"> کد پستی : {{ itemDataUser.postalCode }} </v-col>
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        نام کاربری :
-        <span class="vira-en">{{ itemDataUser.username }}</span>
+      <v-col cols="12" md="4">
+        نام کاربری : <span class="vira-en">{{ itemDataUser.username }}</span>
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        کد کاربری :
-        <span class="vira-en">{{ itemDataUser._id }}</span>
+      <v-col cols="12" md="4">
+        کد کاربری : <span class="vira-en">{{ itemDataUser._id }}</span>
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
+      <v-col cols="12" md="4">
         کد کاربر معرف :
         <span class="vira-en">{{ itemDataUser.referenceCode }}</span>
       </v-col>
@@ -173,66 +85,24 @@
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        نام پذیرنده :
-        {{ itemData.name }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        کد قرارداد :
-        {{ itemData.contractCode }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        تلفن ثابت :
-        {{ itemData.phone }}
-      </v-col>
+      <v-col cols="12" md="4"> نام پذیرنده : {{ itemData.name }} </v-col>
+      <v-col cols="12" md="4"> کد قرارداد : {{ itemData.contractCode }} </v-col>
+      <v-col cols="12" md="4"> تلفن ثابت : {{ itemData.phone }} </v-col>
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        صنف :
-        {{ itemData.category.title }}
+      <v-col cols="12" md="4"> صنف : {{ itemData.category.title }} </v-col>
+      <v-col cols="12" md="4">
+        مقدار تخفیف کلی : {{ itemData.discount }}
       </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        مقدار تخفیف کلی :
-        {{ itemData.discount }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
+      <v-col cols="12" md="4">
         موقیعت :
-
-        <v-dialog
-          v-model="openMap"
-          width="500"
-          @click="startMap"
-        >
+        <v-dialog v-model="openMap" width="500" @click="startMap">
           <template #activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              v-bind="attrs"
-              v-on="on"
-            >
+            <v-btn color="primary" dark v-bind="attrs" v-on="on">
               مشاهده
             </v-btn>
           </template>
-
           <v-card>
             <Maps
               v-if="openMap"
@@ -245,35 +115,15 @@
     </v-row>
 
     <v-row>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        کشور :
-        {{ itemData.country.name }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        استان :
-        {{ itemData.state.name }}
-      </v-col>
-      <v-col
-        cols="12"
-        md="4"
-      >
-        شهر :
-        {{ itemData.city.name }}
-      </v-col>
+      <v-col cols="12" md="4"> کشور : {{ itemData.country.name }} </v-col>
+      <v-col cols="12" md="4"> استان : {{ itemData.state.name }} </v-col>
+      <v-col cols="12" md="4"> شهر : {{ itemData.city.name }} </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12">
         آدرس پذیرنده :
-        <p>
-          {{ itemData.address }}
-        </p>
+        <p>{{ itemData.address }}</p>
       </v-col>
     </v-row>
 
@@ -281,13 +131,8 @@
       <v-col cols="12">
         تگ های پذیرنده :
         <p>
-          <span
-            v-for="(tag, index) in itemData.tags"
-            :key="index"
-            class="ml-1"
-          >
-            {{ tag }}
-            ,
+          <span v-for="(tag, index) in itemData.tags" :key="index" class="ml-1">
+            {{ tag }},
           </span>
         </p>
       </v-col>
@@ -296,18 +141,14 @@
     <v-row>
       <v-col cols="12">
         درباره پذیرنده :
-        <p>
-          {{ itemData.address }}
-        </p>
+        <p>{{ itemData.address }}</p>
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="12">
         توضیحات پذیرنده :
-        <p>
-          {{ itemData.address }}
-        </p>
+        <p>{{ itemData.address }}</p>
       </v-col>
     </v-row>
     <v-row>
@@ -333,9 +174,7 @@
         sm="4"
         :remove="false"
       >
-        <template #header>
-          تصویر لوگو
-        </template>
+        <template #header> تصویر لوگو </template>
       </ImageUploader>
     </v-row>
 
@@ -399,9 +238,7 @@
         md="4"
         :remove="false"
       >
-        <template #header>
-          بارگذاری تصویر کارت ملی
-        </template>
+        <template #header> بارگذاری تصویر کارت ملی </template>
       </ImageUploader>
       <ImageUploader
         v-show="itemData.birthCertificate"
@@ -410,9 +247,7 @@
         md="4"
         :remove="false"
       >
-        <template #header>
-          بارگذاری تصویر شناسنامه
-        </template>
+        <template #header> بارگذاری تصویر شناسنامه </template>
       </ImageUploader>
       <ImageUploader
         v-show="itemData.businessLicense"
@@ -421,9 +256,7 @@
         md="4"
         :remove="false"
       >
-        <template #header>
-          بارگذاری پروانه کسب مربوطه
-        </template>
+        <template #header> بارگذاری پروانه کسب مربوطه </template>
       </ImageUploader>
       <ImageUploader
         v-show="itemData.ownershipDocument"
@@ -432,9 +265,7 @@
         md="4"
         :remove="false"
       >
-        <template #header>
-          بارگذاری اجاره نامه یا سند مالکیت
-        </template>
+        <template #header> بارگذاری اجاره نامه یا سند مالکیت </template>
       </ImageUploader>
       <ImageUploader
         v-show="itemData.bills"
@@ -443,9 +274,7 @@
         md="4"
         :remove="false"
       >
-        <template #header>
-          بارگذاری قبض (برق، آب و...)
-        </template>
+        <template #header> بارگذاری قبض (برق، آب و...) </template>
       </ImageUploader>
     </v-row>
     <v-row class="mt-16">
@@ -504,110 +333,48 @@
     </v-row>
   </v-card>
 </template>
-<script>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRoute } from "vue-router";
 import { EventBus } from "@/mixins/EventBus.js";
 import CardTitle from "@/components/CardTitle";
 import Title from "@/components/Title";
 import Maps from "@/components/MapShow";
 import ImageUploader from "@/components/ImgUploader";
-export default {
-  name: "ViewItem",
-  components: {
-    CardTitle,
-    Title,
-    Maps,
-    ImageUploader,
-  },
-  data() {
-    return {
-      openMap: false,
-      states: [],
-      cities: [],
-      Countries: [],
 
-      allCategory: [],
-      allCountry: [],
-      allStates: [],
-      allCities: [],
+const route = useRoute();
+const openMap = ref(false);
+const itemData = ref({});
+const itemDataUser = ref({});
 
-      itemData: {},
-      itemDataUser: {},
-    };
-  },
-  mounted() {
-    EventBus.$on("selectImg", (data) => {
-      this.imageSrc[data.name] = data.src;
-    });
-
-    EventBus.$on("selectLatLng", (data) => {
-      this.itemData.lat = data.lat;
-      this.itemData.lng = data.lng;
-    });
-  },
-
-  async beforeCreate() {
-    await this.$http.get(process.env.VUE_APP_API_COUNTRY).then((res) => {
-      this.allCountry = res.data;
-    });
-    await this.$http.get(process.env.VUE_APP_API_PROVINCE).then((res) => {
-      this.allStates = res.data;
-    });
-    await this.$http.get(process.env.VUE_APP_API_CITY).then((res) => {
-      this.allCities = res.data;
-    });
-    await this.$http.get(process.env.VUE_APP_API_CATEGORY).then((res) => {
-      this.allCategory = res.data.data;
-
-
-
-
-    });
-    await this.getItemData();
-  },
-
-  methods: {
-    async getItemData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(`${this.$privateKey}/accepter/${this.$route.params.id}`)
-          .then((res) => {
-            this.itemData = res.data.ASREVIRA;
-
-            this.itemDataUser = res.data.ASREVIRA.user;
-            this.itemDataUser.country = this.findCountry(
-              this.itemDataUser.country
-            );
-            this.itemDataUser.state = this.findState(this.itemDataUser.state);
-            this.itemDataUser.city = this.findCity(this.itemDataUser.city);
-
-            this.itemData.country = this.findCountry(this.itemData.country);
-            this.itemData.state = this.findState(this.itemData.state);
-            this.itemData.city = this.findCity(this.itemData.city);
-            this.itemData.category = this.findCategory(this.itemData.category);
-            resolve();
-          })
-          .catch((err) => {
-            console.error(err);
-            reject(err);
-          });
-      });
-    },
-    startMap() {
-      this.$root.$emit("startMap");
-    },
-
-    findCity(id) {
-      return this.allCities.find((city) => city.id == id);
-    },
-    findState(id) {
-      return this.allStates.find((state) => state.id == id);
-    },
-    findCountry(id) {
-      return this.allCountry.find((country) => country.id == id);
-    },
-    findCategory(id) {
-      return this.allCategory.find((category) => category._id == id);
-    },
-  },
+const startMap = () => {
+  EventBus.emit("startMap");
 };
+
+const getItemData = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/accepter/${route.params.id}`
+    );
+    const data = await response.json();
+    itemData.value = data.ASREVIRA;
+    itemDataUser.value = data.ASREVIRA.user;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(() => {
+  EventBus.on("selectImg", (data) => {
+    itemData.value[data.name] = data.src;
+  });
+
+  EventBus.on("selectLatLng", (data) => {
+    itemData.value.lat = data.lat;
+    itemData.value.lng = data.lng;
+  });
+
+  getItemData();
+});
 </script>
