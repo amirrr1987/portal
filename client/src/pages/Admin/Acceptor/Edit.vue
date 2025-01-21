@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
-import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import axios from "axios"; // Replace with your HTTP composable or library
 import CardTitle from "@/components/CardTitle.vue";
 import Item1 from "@/pages/Admin/Acceptor/Edit/Item1.vue";
 import Item2 from "@/pages/Admin/Acceptor/Edit/Item2.vue";
@@ -90,7 +90,7 @@ const edit = ref({
 
 const getItemData = async () => {
   try {
-    const response = await get(
+    const response = await axios.get(
       `${import.meta.env.VITE_APP_PRIVATE_KEY}/accepter/${route.params.id}`
     );
     edit.value = response.data.ASREVIRA;
