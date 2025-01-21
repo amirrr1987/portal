@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import axios from "axios"; // Replace with your HTTP composable or library
 import { useRouter } from "vue-router";
 import jalali from "moment-jalaali";
 import CardTitle from "@/components/CardTitle.vue";
@@ -171,7 +171,7 @@ const viewItem = (item: any) => {
 
 const getTableData = async () => {
   try {
-    const response = await get(import.meta.env.VITE_APP_API_VIOLATION);
+    const response = await axios.get(import.meta.env.VITE_APP_API_VIOLATION);
     tableData.value = response.data.data;
     checkIsLoading();
   } catch (error) {
