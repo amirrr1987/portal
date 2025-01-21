@@ -60,7 +60,6 @@
               <v-row>
                 <v-col cols="12">
                   <Btn
-                    text
                     color="#0d8dbf"
                     label="رمز عبور را فراموش کرده‌ام"
                     dark

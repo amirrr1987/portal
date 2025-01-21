@@ -1,5 +1,11 @@
 <template>
-  <v-col :cols="cols" :sm="sm" :md="md" :lg="lg" :xl="xl">
+  <v-col
+    :cols="cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
+  >
     <v-text-field
       label="رمز عبور"
       class="vira-ltr vira-input-en vira-password-icon"
@@ -8,10 +14,10 @@
       :type="iconPassword ? 'text' : 'password'"
       :rules="[rules.required, rules.passwordMin, rules.english]"
       :append-icon="iconPassword ? 'mdi-eye' : 'mdi-eye-off'"
-      :model-value="modelValue"
+      :model-value="props.modelValue"
       autocomplete="on"
       placeholder=" "
-      @update:model-value="$emit('update:modelValue', $event)"
+      @update:model-value="emit('update:modelValue', $event)"
       @click:append="iconPassword = !iconPassword"
     />
   </v-col>
@@ -20,13 +26,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-const props = defineProps({
-  modelValue: { type: String, default: "" },
-  cols: { type: String, default: "12" },
-  sm: { type: String, default: null },
-  md: { type: String, default: null },
-  lg: { type: String, default: null },
-  xl: { type: String, default: null },
+interface Props {
+  modelValue: string;
+  cols: string;
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+}
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: "",
+  cols: "12",
+  sm: "",
+  md: "",
+  lg: "",
+  xl: "",
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -43,7 +57,3 @@ const rules = {
   },
 };
 </script>
-
-<style scoped>
-/* استایل‌های مورد نیاز */
-</style>

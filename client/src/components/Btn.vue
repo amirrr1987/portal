@@ -22,14 +22,14 @@
 interface Props {
   label: string;
   to: string;
-  text: boolean;
+  text?: string;
   color: string;
   dark: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   label: "",
   to: "",
-  text: false,
+  text: "",
   color: "",
   dark: false,
 });
