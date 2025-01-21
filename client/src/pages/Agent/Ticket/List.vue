@@ -45,14 +45,13 @@
       <span class="proiorty-card" :class="colors[item.priority]" />
     </template>
     <template v-slot:item.title="{ item }">
-      <span class="text-truncate ">
+      <span class="text-truncate">
         {{ item.title }}
       </span>
     </template>
     <template v-slot:item.createdAt="{ item }">
       <span class="text-truncate">
         {{ jalali(item.createdAt) }}
-        
       </span>
     </template>
     <template v-slot:item.action="{ item }">
@@ -82,186 +81,135 @@
   </v-data-table>
 </template>
 
-<script>
-import CardTitle from "@/components/CardTitle";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import jalali from "moment-jalaali";
-import BtnTableHelp from "@/components/BtnTableHelp";
-import ActionBtn from "@/components/ActionBtn";
-import Pagination from "@/components/Pagination";
-import SnackbarSuccess from "@/components/SnackbarSuccess";
-import SnackbarError from "@/components/SnackbarError";
+import CardTitle from "@/components/CardTitle.vue";
+import BtnTableHelp from "@/components/BtnTableHelp.vue";
+import ActionBtn from "@/components/ActionBtn.vue";
+import Pagination from "@/components/Pagination.vue";
+import SnackbarSuccess from "@/components/SnackbarSuccess.vue";
+import SnackbarError from "@/components/SnackbarError.vue";
 
-export default {
-  name: "List",
-  components: {
-    CardTitle,
-    BtnTableHelp,
-    ActionBtn,
-    Pagination,
-    SnackbarSuccess,
-    SnackbarError,
-  },
-  data() {
-    return {
-      listCounts: [5, 10, 20, 50, 100],
-      listSearch: null,
-      listPage: 1,
-      listCount: 5,
-      isLoading: false,
-      snackbarSuccess: false,
-      snackbarError: false,
-      tempTableData: [],
-      tableHeader: [
-        {
-          value: "priority",
-        },
-        {
-          text: "کد تیکت",
-          value: "_id",
-          align: "center",
-        },
-        {
-          text: "فرستنده",
-          value: "createdAt",
-          align: "center",
-        },
-        {
-          text: "گیرنده",
-          value: "createdAt",
-          align: "center",
-        },
-        {
-          text: "عنوان",
-          value: "title",
-          align: "center",
-        },
-        {
-          text: "تاریخ",
-          value: "createdAt",
-          align: "center",
-        },
+const router = useRouter();
+const listCounts = ref([5, 10, 20, 50, 100]);
+const listSearch = ref<string | null>(null);
+const listPage = ref(1);
+const listCount = ref(5);
+const isLoading = ref(false);
+const snackbarSuccess = ref(false);
+const snackbarError = ref(false);
+const tableHeader = ref([
+  { value: "priority" },
+  { text: "کد تیکت", value: "_id", align: "center" },
+  { text: "فرستنده", value: "createdAt", align: "center" },
+  { text: "گیرنده", value: "createdAt", align: "center" },
+  { text: "عنوان", value: "title", align: "center" },
+  { text: "تاریخ", value: "createdAt", align: "center" },
+  { text: "عملیات", value: "action", align: "center", sortable: false },
+]);
+const tableData = ref<any[]>([]);
+const tableDataCopy = ref<any[]>([]);
+const priorities = ref([
+  { id: 0, key: "all", name: "همه" },
+  { id: 1, key: "low", name: "کم" },
+  { id: 2, key: "medium", name: "عادی" },
+  { id: 3, key: "high", name: "زیاد" },
+  { id: 4, key: "critical", name: "بحرانی" },
+]);
+const selectedColor = ref("all");
+const colors = ref({
+  low: "green",
+  medium: "grey",
+  high: "warning",
+  critical: "red",
+});
 
-        {
-          text: "عملیات",
-          value: "action",
-          align: "center",
-          sortable: false,
-        },
-      ],
-      tableData: [],
-      priorities: [
-        { id: 0, key: "all", name: "همه" },
-        { id: 1, key: "low", name: "کم" },
-        { id: 2, key: "medium", name: "عادی" },
-        { id: 3, key: "high", name: "زیاد" },
-        { id: 4, key: "critical", name: "بحرانی" },
-      ],
-      selectedColor: "",
-      colors: {
-        low: "green",
-        medium: "grey",
-        high: "warning",
-        critical: "red",
-      },
-    };
-  },
-
-  methods: {
-    checkIsLoading() {
-      this.tableData.length == 0
-        ? (this.isLoading = true)
-        : (this.isLoading = false);
-    },
-    filterCity() {
-      this.tableData.forEach((item) => {
-        item.city = this.allCities.find((city) => city.id == item.city);
-      });
-    },
-    filterItem(item) {
-      this.tableData = this.tableData.filter(
-        (single) => single._id != item._id
-      );
-    },
-    jalali(str) {
-      return jalali(str).format("jYYYY/jM/jD");
-    },
-    filterColor() {
-      if (this.selectedColor == "all") {
-        this.tableData = this.tableDataCopy;
-      } else if (this.selectedColor != "all") {
-        this.tempTableData = this.tableDataCopy.filter(
-          (single) => single.priority == this.selectedColor
-        );
-        this.tableData = this.tempTableData;
-      }
-    },
-    deleteItem(item) {
-      this.$http
-        .delete(`${process.env.VUE_APP_API_TICKET}/${item}`)
-        .then((res) => {
-          item.deleteDialog = false;
-          this.filterItem(item);
-          this.checkIsLoading();
-          this.snackbarSuccess = true;
-          return res;
-        })
-        .catch((err) => {
-          this.snackbarError = true;
-          return err;
-        });
-    },
-    editItem(item) {
-      this.$router.push(`/admin/agent/${item._id}/edit`);
-    },
-    viewItem(item) {
-      this.$router.push(`/admin/agent/${item._id}/view`);
-    },
-    getTableData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(process.env.VUE_APP_API_TICKET)
-          .then((res) => {
-            this.tableData = res.data.data;
-            this.tableDataCopy = this.tableData;
-            this.checkIsLoading();
-            this.snackbarSuccess = true;
-            resolve(res);
-          })
-          .catch((err) => {
-            this.snackbarError = true;
-            reject(err);
-          });
-      });
-    },
-  },
-  computed: {
-    paginationCount() {
-      let pageCount = this.tableData.length / this.listCount;
-      let pageCountRound = Math.ceil(pageCount);
-      return pageCountRound;
-    },
-
-    listCountsComputed() {
-      let listCountFiltered = [];
-      listCountFiltered = this.listCounts.filter(
-        (item) => item <= this.tableData.length
-      );
-
-      if (this.tableData.length % 5 > 0 && 50 >= this.tableData.length) {
-        listCountFiltered.push(this.listCounts[listCountFiltered.length]);
-      }
-      return listCountFiltered;
-    },
-  },
-
-  async mounted() {
-    await this.getTableData();
-  },
+const checkIsLoading = () => {
+  isLoading.value = tableData.value.length === 0;
 };
+
+const filterColor = () => {
+  if (selectedColor.value === "all") {
+    tableData.value = tableDataCopy.value;
+  } else {
+    tableData.value = tableDataCopy.value.filter(
+      (item) => item.priority === selectedColor.value
+    );
+  }
+};
+
+const jalali = (date: string) => jalali(date).format("jYYYY/jM/jD");
+
+const deleteItem = async (itemId: string) => {
+  try {
+    await fetch(`${import.meta.env.VITE_API_TICKET}/${itemId}`, {
+      method: "DELETE",
+    });
+    tableData.value = tableData.value.filter((item) => item._id !== itemId);
+    checkIsLoading();
+    snackbarSuccess.value = true;
+  } catch (err) {
+    snackbarError.value = true;
+    console.error(err);
+  }
+};
+
+const getTableData = async () => {
+  try {
+    const response = await fetch(import.meta.env.VITE_API_TICKET);
+    const data = await response.json();
+    tableData.value = data.data;
+    tableDataCopy.value = data.data;
+    checkIsLoading();
+    snackbarSuccess.value = true;
+  } catch (err) {
+    snackbarError.value = true;
+    console.error(err);
+  }
+};
+
+const paginationCount = computed(() =>
+  Math.ceil(tableData.value.length / listCount.value)
+);
+
+const listCountsComputed = computed(() => {
+  const filtered = listCounts.value.filter(
+    (item) => item <= tableData.value.length
+  );
+  if (tableData.value.length % 5 > 0 && 50 >= tableData.value.length) {
+    filtered.push(listCounts.value[filtered.length]);
+  }
+  return filtered;
+});
+
+onMounted(async () => {
+  await getTableData();
+});
 </script>
+
 <style>
-/* tbody td {
-  font-size: 12px !important;
-  font-family: Arial; */
-/* } */
+.proiorty-card {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.green {
+  background-color: green;
+}
+
+.grey {
+  background-color: grey;
+}
+
+.warning {
+  background-color: orange;
+}
+
+.red {
+  background-color: red;
+}
 </style>
