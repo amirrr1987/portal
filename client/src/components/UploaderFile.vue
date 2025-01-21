@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import axios from "axios"; // Replace with your HTTP composable or library
 import { EventBus } from "@/mixins/EventBus"; // Ensure EventBus is compatible with Vue 3
 
 interface Props {
@@ -57,8 +57,10 @@ const uploadFile = async (file: File, key: string) => {
     formData.append("image", file);
 
     try {
-      const { post } = useHttp();
-      const response = await post(import.meta.env.VITE_APP_API_IMG, formData); // Replace with your environment variable
+      const response = await axios.post(
+        import.meta.env.VITE_APP_API_IMG,
+        formData
+      ); // Replace with your environment variable
       itemFile.value[key] = response.data.data;
       EventBus.emit("selectFile", {
         src: response.data.data,
