@@ -1,36 +1,46 @@
 <template>
-  <v-col :cols="cols" :sm="sm" :md="md" :lg="lg" :xl="xl">
+  <v-col
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
+  >
     <v-row align="center">
       <v-col
-        :cols="sliderCols"
-        :sm="sliderSm"
-        :md="sliderMd"
-        :lg="sliderLg"
-        :xl="sliderXl"
+        :cols="props.sliderCols"
+        :sm="props.sliderSm"
+        :md="props.sliderMd"
+        :lg="props.sliderLg"
+        :xl="props.sliderXl"
       >
         <v-slider
           max="100"
           min="0"
-        
           v-model="totalAmount"
           track-color="secondary"
-          color="gary"
+          color="gray"
           class="mt-2"
-          :value="calcTotal"
-          @change="changeAmount"
+          :model-value="calcTotal"
+          @update:model-value="changeAmount"
         />
       </v-col>
-      <v-col :cols="boxCols" :sm="boxSm" :md="boxMd" :lg="boxLg" :xl="boxXl">
+      <v-col
+        :cols="props.boxCols"
+        :sm="props.boxSm"
+        :md="props.boxMd"
+        :lg="props.boxLg"
+        :xl="props.boxXl"
+      >
         <v-card
           outlined
           class="d-flex rounded-lg-1"
           height="70"
-          
           style="
             align-items: center;
             justify-content: center;
             border-width: 1px;
-            border-color: #78787878
+            border-color: #78787878;
           "
         >
           {{ calcTotal }}%
@@ -39,58 +49,71 @@
     </v-row>
   </v-col>
 </template>
-<script>
-export default {
-  name: "RangSlider",
-  props: {
-    value: { type: Number, default: null },
-    sliderCols: { type: String, default: "12" },
-    sliderSm: { type: String, default: null },
-    sliderMd: { type: String, default: null },
-    sliderLg: { type: String, default: null },
-    sliderXl: { type: String, default: null },
-    boxCols: { type: String, default: "12" },
-    boxSm: { type: String, default: null },
-    boxMd: { type: String, default: null },
-    boxLg: { type: String, default: null },
-    boxXl: { type: String, default: null },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      totalAmount: 100,
-    };
-  },
-  mounted() {
-    if (this.value != null) this.totalAmount = 100 - this.value;
-  },
-  methods: {
-    clacTotalDiscountSlider() {
-      this.calcTotal = 100 - this.totalAmount;
-    },
-    changeAmount(e) {
-      this.$emit("input", 100 - e);
-    },
-  },
-  computed: {
-    //////////////////////////////////
-    // Start calc total discount
-    calcTotal: function () {
-      return 100 - this.totalAmount;
-    },
-    //  End  calc total discount
-    //////////////////////////////////
-  },
+
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue";
+
+interface Props {
+  value?: number | null;
+  sliderCols?: string;
+  sliderSm?: string;
+  sliderMd?: string;
+  sliderLg?: string;
+  sliderXl?: string;
+  boxCols?: string;
+  boxSm?: string;
+  boxMd?: string;
+  boxLg?: string;
+  boxXl?: string;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  sliderCols: "12",
+  sliderSm: null,
+  sliderMd: null,
+  sliderLg: null,
+  sliderXl: null,
+  boxCols: "12",
+  boxSm: null,
+  boxMd: null,
+  boxLg: null,
+  boxXl: null,
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const emit = defineEmits(["input"]);
+
+const totalAmount = ref(100);
+
+const calcTotal = computed(() => {
+  return 100 - totalAmount.value;
+});
+
+const changeAmount = (e: number) => {
+  emit("input", 100 - e);
 };
+
+onMounted(() => {
+  if (props.value !== null) {
+    totalAmount.value = 100 - props.value;
+  }
+});
 </script>
+
 <style lang="scss">
 /*
 ####################################
-            start v-silder custom style 
+            Start v-slider custom style 
 */
 .v-slider {
   &__track-container {
@@ -113,7 +136,7 @@ export default {
 }
 
 /*
-             End  v-silder custom style 
+             End v-slider custom style 
 ####################################
 */
 </style>

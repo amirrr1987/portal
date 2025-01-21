@@ -21,7 +21,14 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-
+interface Props {
+  value: string;
+  cols: string;
+  sm: string;
+  md: string;
+  lg: string;
+  xl: string;
+}
 // Define the props
 const props = withDefaults(defineProps<Props>(), {
   value: null,

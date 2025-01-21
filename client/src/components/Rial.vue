@@ -1,43 +1,50 @@
 <template>
-  <div class="">
-  <v-text-field
-    :label="label"
-    class="vira-input-ltr"
-    :value="value"
-    @input="$emit('input', parseInt($event))"
-    :counter="counter"
-    :append-icon="appendIcon"
-    required
-  >
-    <template v-slot:append>
-      <span class="mr-3"> {{ append }}</span>
-    </template>
-  </v-text-field>{{type}}</div>
+  <div>
+    <v-text-field
+      :label="props.label"
+      class="vira-input-ltr"
+      :model-value="props.value"
+      @update:model-value="(event) => emit('input', parseInt(event))"
+      :counter="props.counter"
+      :append-icon="props.appendIcon"
+      required
+    >
+      <template v-slot:append>
+        <span class="mr-3">{{ props.append }}</span>
+      </template>
+    </v-text-field>
+    {{ props.type }}
+  </div>
 </template>
 
-<script>
-export default {
-  name: "Rial",
-  props: {
-    label: { type: String, default: null },
-    counter: { type: String, default: null },
-    value: { type: Number, default: null },
-    append: { type: String, default: "ریال" },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
 
-    type: {
-      required: false,
-      type: String,
-      default: "info",
-      validator: (value) =>value.toLowerCase(),
-    },
-  },
-};
+interface Props {
+  label?: string;
+  counter?: string;
+  value?: number | null;
+  append?: string;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+  type?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  label: null,
+  counter: null,
+  value: null,
+  append: "ریال",
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+  type: "info",
+});
+
+const emit = defineEmits(["input"]);
 </script>
-
-<style>
-</style>

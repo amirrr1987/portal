@@ -1,46 +1,59 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
     class="d-flex"
   >
     <slot name="before" />
     <v-text-field
       class="vira-ltr vira-input-en"
       type="email"
-
-      :label="label"
-      :value="value"
-      @input="$emit('input', $event)"
+      :label="props.label"
+      :model-value="props.value"
+      @update:model-value="(event) => emit('input', event)"
+      :rules="[rules.required, rules.email]"
     />
     <slot name="after" />
   </v-col>
 </template>
-<script lang="ts">
-export default {
-  name: "Email",
-  props: {
-    label: { type: String, default: "پست الکترونیکی" },
-    value: { type: String, default: null },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-        email: (v) => {
-          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          return pattern.test(v) || "پست الکترونیک صحیح نمی‌باشد";
-        },
-      },
-    };
+
+<script setup lang="ts">
+import { defineProps, defineEmits } from 'vue';
+
+interface Props {
+  label?: string;
+  value?: string | null;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  label: 'پست الکترونیکی',
+  value: null,
+  cols: '12',
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const emit = defineEmits(['input']);
+
+const rules = {
+  required: (value: any) => !!value || 'این فیلد الزامی است',
+  email: (v: string) => {
+    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return pattern.test(v) || 'پست الکترونیک صحیح نمی‌باشد';
   },
 };
 </script>
+
+<style>
+/* Add your styles here */
+</style>

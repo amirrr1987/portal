@@ -1,11 +1,11 @@
 <template>
   <v-row>
     <v-col
-      :cols="cols"
-      :sm="sm"
-      :md="md"
-      :lg="lg"
-      :xl="xl"
+      :cols="props.cols"
+      :sm="props.sm"
+      :md="props.md"
+      :lg="props.lg"
+      :xl="props.xl"
     >
       <div class="d-flex align-center outlined border">
         <v-file-input
@@ -13,59 +13,66 @@
           v-model="value"
           :rules="[rules.required]"
           class="file-upload"
-          @change="uploadFile($event, `itemFile`)"
-          @click:clear="removeKey(`itemFile`)"
+          @change="uploadFile($event, 'itemFile')"
+          @click:clear="removeKey('itemFile')"
         />
       </div>
     </v-col>
   </v-row>
 </template>
 
-<script>
-import { EventBus } from "@/mixins/EventBus.js";
-export default {
-  name: "FileUploader",
-  props: {
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      value: null,
-      itemFile: {
-        name: "",
-      },
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      }
-    };
-  },
-  methods: {
-    callItBack() {
-      alert("function called");
-    },
+<script setup lang="ts">
+import { ref } from "vue";
+import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import { EventBus } from "@/mixins/EventBus"; // Ensure EventBus is compatible with Vue 3
 
-    uploadFile(file, key) {
-      if (file != null) {
-        const formdata = new FormData();
-        formdata.append("image", file);
-        this.$http.post(process.env.VUE_APP_API_IMG, formdata).then((res) => {
-          this.itemFile[key] = res.data.data;
-          EventBus.$emit("selectFile", {
-            src: res.data.data,
-          });
-        });
-      }
-    },
-    removeKey() {
-      EventBus.$emit("selectFile", {
-        src: null,
+interface Props {
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const value = ref<File | null>(null);
+const itemFile = ref({
+  name: "",
+});
+
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
+};
+
+const uploadFile = async (file: File, key: string) => {
+  if (file) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const { post } = useHttp();
+      const response = await post(import.meta.env.VITE_APP_API_IMG, formData); // Replace with your environment variable
+      itemFile.value[key] = response.data.data;
+      EventBus.emit("selectFile", {
+        src: response.data.data,
       });
-    },
-  },
+    } catch (error) {
+      console.error("Failed to upload file:", error);
+    }
+  }
+};
+
+const removeKey = () => {
+  EventBus.emit("selectFile", {
+    src: null,
+  });
 };
 </script>
 

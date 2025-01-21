@@ -2,14 +2,10 @@
   <div class="">404</div>
 </template>
 
-<script>
-export default {
-  name: "404",
-};
-</script>
+<script setup lang="ts"></script>
 
 <style lang="scss">
-.dd{
-    display: grid;
+.dd {
+  display: grid;
 }
 </style>

@@ -1,80 +1,94 @@
 <template>
-  <v-col :cols="cols" :sm="sm" :md="md" :lg="lg" :xl="xl">
+  <v-col
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
+  >
     <v-autocomplete
       :disabled="isUpdating"
       :items="users"
       :loading="isUpdating"
-      :label="label"
+      :label="props.label"
       item-text="name"
       item-value="_id"
       return-object
-      :value="value"
-      v-on="$listeners"
-      @change="submitUser"
-      :rules="[rules.required]"
+      :model-value="props.value"
       required
+      :rules="[rules.required]"
+      v-on="$attrs"
+      @update:model-value="submitUser"
     />
   </v-col>
 </template>
 
-<script>
-export default {
-  name: "Users",
+<script setup lang="ts">
+import { ref, watch, onBeforeMount } from "vue";
 
-  props: {
-    value: { type: String, default: null },
-    label: { type: String, default: "" },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      autoUpdate: true,
-      isUpdating: false,
-      users: [],
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
+interface User {
+  _id: string;
+  name: string;
+}
 
-  watch: {
-    isUpdating(val) {
-      if (val) {
-        setTimeout(() => (this.isUpdating = false), 3000);
-      }
-    },
-  },
+interface Props {
+  value?: string | null;
+  label?: string;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
 
-  methods: {
-    getUsersData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(`${this.$privateKey}/users`)
-          .then((res) => {
-            this.users = res.data.ASREVIRA.users;
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    },
-    submitUser(e) {
-      this.$emit("input", e);
-      this.$emit("submit" , this.users.find(item => item._id == e))
-    //   this.users.splice(0,users.findIndex(item => item._id == e));
-    },
-    remove(item) {
-      const index = this.friends.indexOf(item.name);
-      if (index >= 0) this.friends.splice(index, 1);
-    },
-  },
-  beforeMount() {
-    this.getUsersData();
-  },
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  label: "",
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const emit = defineEmits(["input", "submit"]);
+
+const isUpdating = ref(false);
+const users = ref<User[]>([]);
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
 };
+
+watch(isUpdating, (val) => {
+  if (val) {
+    setTimeout(() => (isUpdating.value = false), 3000);
+  }
+});
+
+const getUsersData = async () => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_PRIVATE_KEY}/users`
+    ); // Replace with your environment variable
+    users.value = response.data.ASREVIRA.users;
+  } catch (err) {
+    console.error("Failed to fetch users:", err);
+  }
+};
+
+const submitUser = (e: string) => {
+  emit("input", e);
+  const selectedUser = users.value.find((item) => item._id === e);
+  if (selectedUser) {
+    emit("submit", selectedUser);
+  }
+};
+
+onBeforeMount(() => {
+  getUsersData();
+});
 </script>
+
+<style>
+/* Add your styles here */
+</style>

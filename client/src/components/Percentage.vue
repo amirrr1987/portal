@@ -1,46 +1,59 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
   >
     <v-text-field
-      :label="label"
+      :label="props.label"
       class="vira-ltr"
       type="number"
       :rules="[rules.required, rules.enNum]"
-      :value="value"
-      :counter="counter"
+      :model-value="props.value"
+      :counter="props.counter"
       append-icon="mdi-percent"
       required
-      @input="$emit('input', parseInt($event))"
+      @update:model-value="(event) => emit('input', parseInt(event))"
     />
   </v-col>
 </template>
 
-<script lang="ts">
-export default {
-  name: "FullName",
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
 
-  props: {
-    label: { type: String, default: null },
-    counter: { type: String, default: null },
-    value: { type: Number, default: null },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-        enNum: (value) => 100 > value > 0 || ""
-      },
-    };
-  },
+interface Props {
+  label?: string;
+  counter?: string;
+  value?: number | null;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  label: null,
+  counter: null,
+  value: null,
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const emit = defineEmits(["input"]);
+
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
+  enNum: (value: number) =>
+    (value > 0 && value < 100) || "عدد باید بین 0 و 100 باشد",
 };
 </script>
+
+<style>
+/* Add your styles here */
+</style>

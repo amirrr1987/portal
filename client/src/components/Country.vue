@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
 
 interface Props {
   value?: number | null;
@@ -49,8 +48,7 @@ const rules = {
 };
 
 onMounted(async () => {
-  const { get } = useHttp();
-  const response = await get(import.meta.env.VITE_APP_API_COUNTRY); // Replace with your environment variable
+  const response = await fetch(import.meta.env.VITE_APP_API_COUNTRY); // Replace with your environment variable
   allCountry.value = response.data;
 });
 </script>

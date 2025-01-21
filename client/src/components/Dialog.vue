@@ -1,8 +1,5 @@
 <template>
-  <v-dialog
-    persistent
-    max-width="490"
-  >
+  <v-dialog persistent max-width="490">
     <template #activator="{ on, attrs }">
       <Btn
         label="تائید نهایی"
@@ -14,10 +11,7 @@
         v-on="$listeners"
       >
         <template #after>
-          <Checked
-            width="25"
-            height="25"
-          />
+          <Checked width="25" height="25" />
         </template>
       </Btn>
     </template>
@@ -39,20 +33,19 @@
           dark
           @click="dialog = false"
         />
-
         <v-spacer />
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
-<script lang="ts">
-import Btn from "@/components/Btn.vue";
-import Checked from "@/icons/Main/IconCheckedCircle.vue";
-export default {
-  name: "TheDialog",
-  components: {
-    Btn,
-    Checked,
-  },
-};
+
+<script setup lang="ts">
+import Btn from '@/components/Btn.vue';
+import Checked from '@/icons/Main/IconCheckedCircle.vue';
+
+const dialog = ref(false);
 </script>
+
+<style>
+/* Add your styles here */
+</style>

@@ -1,31 +1,36 @@
 <template>
-  <v-row
-    justify="center"
-    class="py-4"
-  >
-    <v-col
-      cols="12"
-      md="6"
-    >
+  <v-row justify="center" class="py-4">
+    <v-col cols="12" md="6">
       <v-pagination
         class="py-3 vira-ltr"
-        :value="value"
+        :model-value="props.value"
         :total-visible="5"
-        :length="length"
+        :length="props.length"
         circle
         prev-icon="mdi-chevron-double-right"
         next-icon="mdi-chevron-double-left"
-        v-on="$listeners"
+        @update:model-value="(event) => emit('update:model-value', event)"
       />
     </v-col>
   </v-row>
 </template>
-<script lang="ts">
-export default {
-  name: "Pagination",
-  props: {
-    value: { type: Number, default: null },
-    length: { type: Number, default: null },
-  },
-};
+
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
+
+interface Props {
+  value?: number | null;
+  length?: number | null;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  length: null,
+});
+
+const emit = defineEmits(["update:model-value"]);
 </script>
+
+<style>
+/* Add your styles here */
+</style>

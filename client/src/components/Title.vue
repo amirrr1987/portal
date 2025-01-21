@@ -1,63 +1,75 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
     class="text-h6"
   >
     <slot name="before" />
     <IconUser2
-      v-if="iconUser2"
+      v-if="props.iconUser2"
       class="ml-3"
-      :width="iconSize"
-      :height="iconSize"
+      :width="props.iconSize"
+      :height="props.iconSize"
     />
     <IconPapers
-      v-if="iconPapers"
+      v-if="props.iconPapers"
       class="ml-3"
-      :width="iconSize"
-      :height="iconSize"
+      :width="props.iconSize"
+      :height="props.iconSize"
     />
     <IconImages
-      v-if="iconImages"
+      v-if="props.iconImages"
       class="ml-3"
-      :width="iconSize"
-      :height="iconSize"
+      :width="props.iconSize"
+      :height="props.iconSize"
     />
     <IconStore
-      v-if="iconStore"
+      v-if="props.iconStore"
       class="ml-3"
-      :width="iconSize"
-      :height="iconSize"
+      :width="props.iconSize"
+      :height="props.iconSize"
     />
     <span>
-      {{ label }}
+      {{ props.label }}
     </span>
     <slot name="after" />
   </v-col>
 </template>
-<script lang="ts">
-import IconImages from "@/icons/Main/IconImages";
-import IconPapers from "@/icons/Main/IconPapers";
-import IconUser2 from "@/icons/Main/IconUser2";
-import IconStore from "@/icons/Main/IconStore";
-export default {
-  name: "TheTitle",
-  components: { IconUser2, IconPapers, IconImages, IconStore },
-  props: {
-    label: { type: String, default: "عنوان" },
-    cols: { type: String, default: "12" },
-    iconImages: { type: Boolean, default: false },
-    iconPapers: { type: Boolean, default: false },
-    iconUser2: { type: Boolean, default: false },
-    iconStore: { type: Boolean, default: false },
-    iconSize: { type: String, default: "18" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-};
+
+<script setup lang="ts">
+import IconImages from "@/icons/Main/IconImages.vue";
+import IconPapers from "@/icons/Main/IconPapers.vue";
+import IconUser2 from "@/icons/Main/IconUser2.vue";
+import IconStore from "@/icons/Main/IconStore.vue";
+
+interface Props {
+  label?: string;
+  cols?: string;
+  iconImages?: boolean;
+  iconPapers?: boolean;
+  iconUser2?: boolean;
+  iconStore?: boolean;
+  iconSize?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  label: "عنوان",
+  cols: "12",
+  iconImages: false,
+  iconPapers: false,
+  iconUser2: false,
+  iconStore: false,
+  iconSize: "18",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
 </script>

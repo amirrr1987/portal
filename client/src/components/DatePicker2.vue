@@ -1,15 +1,15 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
   >
     <slot name="before" />
     <div class="d-flex mx-auto align-center">
       <v-btn
-        :class="!value ? 'red' : 'primary'"
+        :class="!props.value ? 'red' : 'primary'"
         min-width="36"
         class="px-0"
         @click="show = true"
@@ -25,7 +25,7 @@
       />
 
       <DatePicker
-        :value="value"
+        :value="props.value"
         color="#26caef"
         format="jYYYY/jMM/jDD"
         element="my-custom-editable-input"
@@ -33,7 +33,7 @@
         :show="show"
         :rules="[rules.required]"
         required
-        @input="$emit('input', $event)"
+        @input="(event) => emit('input', event)"
         @close="show = false"
       />
     </div>
@@ -41,34 +41,36 @@
   </v-col>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from "vue";
 import DatePicker from "vue-persian-datetime-picker";
 import IconDate from "@/icons/Main/IconCalendar.vue";
-export default {
-  name: "Date",
-  components: {
-    DatePicker,
-    IconDate,
-  },
-  props: {
-    value: { type: String, default: null },
-    label: { type: String, default: "انتخاب تاریخ" },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-  data() {
-    return {
-      date: "",
-      show: false,
-      error: "blue",
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
+
+interface Props {
+  value?: string | null;
+  label?: string;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  value: null,
+  label: "انتخاب تاریخ",
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
+
+const emit = defineEmits(["input"]);
+
+const show = ref(false);
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
 };
 </script>
 

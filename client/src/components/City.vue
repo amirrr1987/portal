@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
 
 interface Props {
   value?: number | null;
@@ -51,12 +50,12 @@ const rules = {
 };
 
 const cities = computed(() => {
-  return allCities.value.filter((item) => item.stateId === props.stateId);
+  if (!allCities.value) return;
+  return allCities.value?.filter((item) => item.stateId === props.stateId);
 });
 
 onMounted(async () => {
-  const { get } = useHttp();
-  const response = await get(import.meta.env.VITE_APP_API_CITY); // Replace with your environment variable
+  const response = await fetch(import.meta.env.VITE_APP_API_CITY); // Replace with your environment variable
   allCities.value = response.data;
 });
 </script>

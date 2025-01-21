@@ -1,60 +1,49 @@
 <template>
   <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
+    :cols="props.cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
   >
-    <div
-      class="subheading mb-5 mr-2"
-      style="color: #686868"
-    >
+    <div class="subheading mb-5 mr-2" style="color: #686868">
       <slot name="header" />
     </div>
 
     <v-img
       ref="chooseFile"
-      :src="imgSrc"
-      :lazy-src="imgSrc"
-      :v-show="imageSrc.imgName"
-      :alt="imgName"
-      :title="imgName"
+      :src="props.imgSrc"
+      :lazy-src="props.imgSrc"
+      :alt="props.imgName"
+      :title="props.imgName"
       transition="scale-transition"
       aspect-ratio="1.7"
       max-width="100%"
       class="img-upload rounded-lg position-relative"
-      :class="imgSrc ? 'choose-file' : `choose-file bordered`"
-      :style="`border-color : ${changeBorderColor}`"
+      :class="props.imgSrc ? 'choose-file' : 'choose-file bordered'"
+      :style="`border-color: ${changeBorderColor}`"
     >
       <template>
-        <v-row
-          class="fill-height ma-0"
-          align="center"
-          justify="center"
-        >
+        <v-row class="fill-height ma-0" align="center" justify="center">
           <v-btn
-            v-show="!imgSrc"
+            v-show="!props.imgSrc"
             :color="changeColor"
             class="px-0"
             rounded
             dark
           >
             <label
-              :for="imgName"
+              :for="props.imgName"
               class="d-flex px-4 py-6"
               style="z-index: 9"
-            >انتخاب فایل</label>
+              >انتخاب فایل</label
+            >
           </v-btn>
 
-          <v-dialog
-            v-model="ShowImg"
-            persistent
-            max-width="590"
-          >
+          <v-dialog v-model="showImg" persistent max-width="590">
             <template #activator="{ on, attrs }">
               <v-btn
-                v-show="imgSrc"
+                v-show="props.imgSrc"
                 style="z-index: 1"
                 class="px-6 py-5"
                 color="primary"
@@ -66,20 +55,14 @@
                 مشاهده
               </v-btn>
             </template>
-            <v-img
-              :src="imgSrc"
-              :lazy-src="imgSrc"
-              :v-show="imageSrc.imgName"
-            >
+            <v-img :src="props.imgSrc" :lazy-src="props.imgSrc">
               <v-btn
                 fixed
                 icon
                 small
                 dark
-                :alt="imgName"
-                :title="imgName"
                 class="red mr-2 mt-2"
-                @click="ShowImg = false"
+                @click="showImg = false"
               >
                 <v-icon>mdi-window-close</v-icon>
               </v-btn>
@@ -87,24 +70,24 @@
           </v-dialog>
 
           <v-file-input
-            :id="imgName"
+            :id="props.imgName"
             v-model="value"
             accept="image/png, image/jpeg, image/bmp"
             :rules="checkValidate"
             :messages="imgSrcMessage"
             required
-            @change="onFileChange($event, `${imgName}`)"
+            @change="onFileChange($event, props.imgName)"
           />
 
           <v-btn
-            v-if="remove"
-            v-show="imgSrc"
+            v-if="props.remove"
+            v-show="props.imgSrc"
             absolute
             icon
             small
             dark
             class="red"
-            @click="removeImage(`${imgName}`)"
+            @click="removeImage(props.imgName)"
           >
             <v-icon>mdi-window-close</v-icon>
           </v-btn>
@@ -115,102 +98,92 @@
   </v-col>
 </template>
 
-<script lang="ts">
-import { EventBus } from "@/mixins/EventBus";
+<script setup lang="ts">
+import { ref, computed } from "vue";
+import { EventBus } from "@/mixins/EventBus"; // Ensure EventBus is compatible with Vue 3
+import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
 
-export default {
-  name: "ImageUploader",
-  props: {
-    cols: { type: String, default: "12" },
-    required: { type: Boolean, default: false },
-    imgName: { type: String, default: null },
-    imgSrc: { type: String, default: "" },
-    remove: { type: Boolean, default: true },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-    validated: { type: Boolean, default: false },
-  },
-  data() {
-    return {
-      hasImage: false,
-      ShowImg: false,
-      value: null,
-      imageFile: {
-        imgName: "",
-      },
-      imageSrc: {
-        imgName: "",
-      },
+interface Props {
+  cols?: string;
+  required?: boolean;
+  imgName?: string;
+  imgSrc?: string;
+  remove?: boolean;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+  validated?: boolean;
+}
 
-      rules: {
-        imgSrc: () => !this.imgSrc == "",
-      },
-    };
-  },
-  computed: {
-    imgSrcMessage() {
-      if (this.required == true) {
-        return !this.imgSrc ? "این تصاویر الزامی است" : "";
-      } else {
-        return "";
-      }
-    },
-    checkValidate() {
-      if (this.required == true) {
-        return [this.rules.imgSrc];
-      } else {
-        return [];
-      }
-    },
+const props = withDefaults(defineProps<Props>(), {
+  cols: "12",
+  required: false,
+  imgName: null,
+  imgSrc: "",
+  remove: true,
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+  validated: false,
+});
 
-    changeColor() {
-      return !this.value && this.validated ? "red" : "primary";
-    },
-    changeBorderColor() {
-      return !this.value && this.validated ? "red" : "primary";
-    },
-  },
+const showImg = ref(false);
+const value = ref<File | null>(null);
+const imageFile = ref<Record<string, string>>({});
+const imageSrc = ref<Record<string, string>>({});
 
-  methods: {
-    //////////////////////////////////
-    // Start Upload File
-    uploadFile(file, key) {
-      const formdata = new FormData();
-      formdata.append("image", file);
-      this.$http.post(process.env.VUE_APP_API_IMG, formdata).then((res) => {
-        this.imageFile[key] = res.data.data;
+const imgSrcMessage = computed(() => {
+  return props.required && !props.imgSrc ? "این تصاویر الزامی است" : "";
+});
 
-        EventBus.$emit("selectImg", {
-          name: `${this.imgName}`,
-          src: res.data.data,
-        });
-        this.rules.imgSrc = true;
-      });
-    },
-    onFileChange(e, key) {
-      this.imageSrc[key] = URL.createObjectURL(e);
-      this.uploadFile(e, key);
-    },
-    removeImage(key) {
-      this.imageSrc[key] = "";
-      this.imageFile[key] = "";
+const checkValidate = computed(() => {
+  return props.required ? [(v: any) => !!v || "این فیلد الزامی است"] : [];
+});
 
-      this.value = null;
+const changeColor = computed(() => {
+  return !value.value && props.validated ? "red" : "primary";
+});
 
-      this.rules.imgSrc = false;
-      EventBus.$emit("selectImg", {
-        name: `${this.imgName}`,
-        src: "",
-      });
-      this.rules.imgSrc = false;
-    },
-    //  End  Upload File
-    //////////////////////////////////
-  },
+const changeBorderColor = computed(() => {
+  return !value.value && props.validated ? "red" : "primary";
+});
+
+const uploadFile = async (file: File, key: string) => {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  try {
+    const response = await fetch(import.meta.env.VITE_APP_API_IMG, formData); // Replace with your environment variable
+    imageFile.value[key] = response.data.data;
+
+    EventBus.emit("selectImg", {
+      name: key,
+      src: response.data.data,
+    });
+  } catch (error) {
+    console.error("Failed to upload file:", error);
+  }
+};
+
+const onFileChange = (e: File, key: string) => {
+  imageSrc.value[key] = URL.createObjectURL(e);
+  uploadFile(e, key);
+};
+
+const removeImage = (key: string) => {
+  imageSrc.value[key] = "";
+  imageFile.value[key] = "";
+  value.value = null;
+
+  EventBus.emit("selectImg", {
+    name: key,
+    src: "",
+  });
 };
 </script>
+
 <style lang="scss">
 .img-upload {
   overflow: hidden;
