@@ -3,9 +3,6 @@
     <v-card class="pa-16">
       <CardTitle label="ثبت پیام های پیش فرض" color="#4fc7db" />
       <v-row>
-        <!-- <v-col cols="" md="4">
-          <v-select label="انتخاب بخش" :items="" v-model="" />
-        </v-col> -->
         <Texts label="عنوان" v-model="itemData.title" md="8" />
       </v-row>
       <v-row>
@@ -18,16 +15,15 @@
               menubar: false,
               rtl: true,
               directionality: 'rtl',
-
               plugins: [
                 'advlist autolink lists link image charmap print preview anchor',
                 'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount ',
+                'insertdatetime media table paste code help wordcount',
               ],
               toolbar:
                 'undo redo | formatselect | bold italic backcolor | \
            alignleft aligncenter alignright alignjustify | \
-           bullist numlist outdent indent | removeformat |  rtl',
+           bullist numlist outdent indent | removeformat | rtl',
             }"
           />
         </v-col>
@@ -41,80 +37,64 @@
   </v-form>
 </template>
 
-<script>
-import CardTitle from "@/components/CardTitle";
-import Texts from "@/components/Texts";
+<script setup lang="ts">
+import { ref, onBeforeMount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import axios from "axios"; // Import axios
+import CardTitle from "@/components/CardTitle.vue";
+import Texts from "@/components/Texts.vue";
 import Editor from "@tinymce/tinymce-vue";
 import Btn from "@/components/Btn.vue";
 
-export default {
-  name: "Edit",
-  components: {
-    CardTitle,
-    Texts,
-    Editor,
-    Btn,
-  },
-  data() {
-    return {
-      itemData: {
-        title: "",
-        body: "",
-      },
-    };
-  },
-  methods: {
-    //////////////////////////////////
-    // Start check form validation
-    validateForm() {
-      if (this.$refs.thisForm.validate()) {
-        this.submitForm();
-      }
-    },
-    //  End  check form validation
-    //////////////////////////////////
+const router = useRouter();
+const route = useRoute();
 
-    //////////////////////////////////
-    // Start
-    submitForm() {
-      this.$http
-        .post(process.env.VUE_APP_API_DEFAULT_MESSAGE, this.itemData)
-        .then(() => {
-          this.routerToList();
-        })
-        .catch(() => {
-          this.error = true;
-        });
-    },
-    //  End
-    //////////////////////////////////
+const thisForm = ref<any>(null);
+const itemData = ref({
+  title: "",
+  body: "",
+});
 
-    //////////////////////////////////
-    // Start router to list
-    routerToList() {
-      setTimeout(() => {
-        this.$router.push(`/admin/default-message/list`);
-      }, 600);
-    },
-    //  End  router to list
-    //////////////////////////////////
-
-    async getItemData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(`${process.env.VUE_APP_API_DEFAULT_MESSAGE}/${this.$route.params.id}`)
-          .then((res) => {
-            this.itemData = res.data.data;
-            resolve();
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    },
-  },
-  async beforeMount() {
-    await this.getItemData();
-  },
+const validateForm = () => {
+  if (thisForm.value.validate()) {
+    submitForm();
+  }
 };
+
+const submitForm = async () => {
+  try {
+    await axios.post(
+      import.meta.env.VITE_APP_API_DEFAULT_MESSAGE,
+      itemData.value
+    );
+    routerToList();
+  } catch (error) {
+    console.error("Failed to submit form:", error);
+  }
+};
+
+const routerToList = () => {
+  setTimeout(() => {
+    router.push("/admin/default-message/list");
+  }, 600);
+};
+
+const getItemData = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_API_DEFAULT_MESSAGE}/${route.params.id}`
+    );
+    itemData.value = response.data.data;
+  } catch (error) {
+    console.error("Failed to fetch item data:", error);
+  }
+};
+
+onBeforeMount(async () => {
+  await getItemData();
+});
 </script>
+
+<style>
+/* Add your styles here */
+</style>
