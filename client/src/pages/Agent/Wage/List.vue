@@ -88,7 +88,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useHttp } from "@/composables/useHttp"; // Replace with your HTTP composable or library
+import axios from "axios"; // Replace with your HTTP composable or library
 import { useRouter } from "vue-router";
 import CardTitle from "@/components/CardTitle.vue";
 import BtnTableHelp from "@/components/BtnTableHelp.vue";
@@ -203,7 +203,7 @@ const viewItem = (item: any) => {
 
 const getTableData = async () => {
   try {
-    const response = await get(`${import.meta.env.VITE_APP_PRIVATE_KEY}/agent`);
+    const response = await axios.get(`${import.meta.env.VITE_APP_PRIVATE_KEY}/agent`);
     tableData.value = response.data.ASREVIRA.docs;
     checkIsLoading();
     filterCity();
