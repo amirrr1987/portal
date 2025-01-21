@@ -97,7 +97,9 @@
   </v-data-table>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import CardTitle from "@/components/CardTitle";
 import BtnTableHelp from "@/components/BtnTableHelp";
 import ActionBtn from "@/components/ActionBtn";
@@ -105,156 +107,105 @@ import Pagination from "@/components/Pagination";
 import SnackbarSuccess from "@/components/SnackbarSuccess";
 import SnackbarError from "@/components/SnackbarError";
 
-export default {
-  name: "List",
-  components: {
-    CardTitle,
-    BtnTableHelp,
-    ActionBtn,
-    Pagination,
-    SnackbarSuccess,
-    SnackbarError,
-  },
-  data() {
-    return {
-      listCounts: [5, 10, 20, 50, 100],
-      listSearch: null,
-      listPage: 1,
-      listCount: 5,
-      isLoading: false,
-      snackbarSuccess: false,
-      snackbarError: false,
-      tableHeader: [
-        {
-          text: "نام پذیرنده",
-          value: "name",
-          align: "center",
-        },
-        {
-          text: "کد پذیرنده",
-          value: "_id",
-          align: "center",
-        },
-        {
-          text: "صنف",
-          value: "category",
-          align: "center",
-        },
-        {
-          text: "شهر",
-          value: "city",
-          align: "center",
-        },
-        {
-          text: "وضعیت",
-          value: "status",
-          align: "center",
-        },
+const router = useRouter();
+const listCounts = ref([5, 10, 20, 50, 100]);
+const listSearch = ref<string | null>(null);
+const listPage = ref(1);
+const listCount = ref(5);
+const isLoading = ref(false);
+const snackbarSuccess = ref(false);
+const snackbarError = ref(false);
+const tableHeader = ref([
+  { text: "نام پذیرنده", value: "name", align: "center" },
+  { text: "کد پذیرنده", value: "_id", align: "center" },
+  { text: "صنف", value: "category", align: "center" },
+  { text: "شهر", value: "city", align: "center" },
+  { text: "وضعیت", value: "status", align: "center" },
+  { text: "عملیات", value: "action", align: "center", sortable: false },
+]);
+const tableData = ref<any[]>([]);
+const allCategory = ref<any[]>([]);
+const allCities = ref<any[]>([]);
 
-        {
-          text: "عملیات",
-          value: "action",
-          align: "center",
-          sortable: false,
-        },
-      ],
-      tableData: [],
-      allCategory: [],
-    };
-  },
+const isEng = (str: string) => /^[a-zA-Z0-9]/gi.test(str);
 
-  methods: {
-    isEng(str) {
-      const en = /^[a-zA-Z0-9]/gi;
-      return en.test(str);
-    },
-    checkIsLoading() {
-      this.tableData.length == 0
-        ? (this.isLoading = true)
-        : (this.isLoading = false);
-    },
-    filterCity() {
-      this.tableData.forEach((item) => {
-        item.city = this.allCities.find((city) => city.id == item.city);
-      });
-    },
-    filterCategory() {
-      this.tableData.forEach((item) => {
-        item.category = this.allCategory.find(
-          (category) => category._id == item.category
-        );
-      });
-    },
-    filterItem(item) {
-      this.tableData = this.tableData.filter(
-        (single) => single._id != item
-      );
-    },
-    deleteItem(item) {
-      this.$http
-        .delete(`${this.$privateKey}/accepter/${item}`)
-        .then((res) => {
-          this.filterItem(item);
-          this.checkIsLoading();
-          this.snackbarSuccess = true;
-          return res;
-        })
-        .catch((err) => {
-          this.snackbarError = true;
-          return err;
-        });
-    },
-    editItem(item) {
-      this.$router.push(`/admin/acceptor/${item._id}/edit`);
-    },
-    viewItem(item) {
-      this.$router.push(`/admin/acceptor/${item._id}/view`);
-    },
-    getTableData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(`${this.$privateKey}/accepter`)
-          .then((res) => {
-            this.tableData = res.data.ASREVIRA.docs;
-            // this.checkIsLoading();
-            this.filterCity();
-            resolve(res);
-          })
-          .catch((err) => {
-            this.snackbarError = true;
-            reject(err);
-          });
-      });
-    },
-  },
-  computed: {
-    paginationCount() {
-      let pageCount = this.tableData.length / this.listCount;
-      let pageCountRound = Math.ceil(pageCount);
-      return pageCountRound;
-    },
-
-    listCountsComputed() {
-      let listCountFiltered = [];
-      listCountFiltered = this.listCounts.filter(
-        (item) => item <= this.tableData.length
-      );
-
-      if (this.tableData.length % 5 > 0 && 50 >= this.tableData.length) {
-        listCountFiltered.push(this.listCounts[listCountFiltered.length]);
-      }
-      return listCountFiltered;
-    },
-  },
-
-  async created() {
-    await this.$http.get(process.env.VUE_APP_API_CITY).then((res) => {
-      this.allCities = res.data;
-    });
-    await this.getTableData();
-  },
+const checkIsLoading = () => {
+  isLoading.value = tableData.value.length === 0;
 };
+
+const filterCity = () => {
+  tableData.value.forEach((item) => {
+    item.city = allCities.value.find((city) => city.id === item.city);
+  });
+};
+
+const filterCategory = () => {
+  tableData.value.forEach((item) => {
+    item.category = allCategory.value.find(
+      (category) => category._id === item.category
+    );
+  });
+};
+
+const filterItem = (itemId: string) => {
+  tableData.value = tableData.value.filter((single) => single._id !== itemId);
+};
+
+const deleteItem = async (itemId: string) => {
+  try {
+    await fetch(`${import.meta.env.VITE_API_URL}/accepter/${itemId}`, {
+      method: "DELETE",
+    });
+    filterItem(itemId);
+    checkIsLoading();
+    snackbarSuccess.value = true;
+  } catch (err) {
+    snackbarError.value = true;
+    console.error(err);
+  }
+};
+
+const editItem = (item: any) => {
+  router.push(`/admin/acceptor/${item._id}/edit`);
+};
+
+const viewItem = (item: any) => {
+  router.push(`/admin/acceptor/${item._id}/view`);
+};
+
+const getTableData = async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/accepter`);
+    const data = await response.json();
+    tableData.value = data.ASREVIRA.docs;
+    filterCity();
+  } catch (err) {
+    snackbarError.value = true;
+    console.error(err);
+  }
+};
+
+const paginationCount = computed(() =>
+  Math.ceil(tableData.value.length / listCount.value)
+);
+
+const listCountsComputed = computed(() => {
+  const filtered = listCounts.value.filter(
+    (item) => item <= tableData.value.length
+  );
+  if (tableData.value.length % 5 > 0 && 50 >= tableData.value.length) {
+    filtered.push(listCounts.value[filtered.length]);
+  }
+  return filtered;
+});
+
+onMounted(async () => {
+  const citiesResponse = await fetch(import.meta.env.VITE_API_CITY);
+  allCities.value = await citiesResponse.json();
+  await getTableData();
+});
 </script>
+
 <style>
 .vira-data-table-footer {
   position: relative;
