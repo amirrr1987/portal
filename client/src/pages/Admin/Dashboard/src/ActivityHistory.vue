@@ -1,13 +1,18 @@
 <template>
   <v-card class="px-md-6 py-10">
     <v-row>
-      <v-col cols="12" md="6" v-for="item in itemCount" :key="item">
+      <v-col
+        v-for="(item, index) in itemCount"
+        :key="index"
+        cols="12"
+        md="6"
+      >
         <Item
           :time="time"
           :date="date"
           :ip="ip"
           :os="os"
-          :broswer="broswer"
+          :browser="browser"
           :device="device"
           :description="description"
         />
@@ -16,24 +21,14 @@
   </v-card>
 </template>
 
-<script>
-import Item from "@/components/ActivityHistoryItem";
-export default {
-  name: "ActivityHistory",
-  components: {
-    Item,
-  },
-  data() {
-    return {
-      itemCount: 4,
-      time: "سیبسیب",
-      date: "",
-      ip: "",
-      os: "",
-      broswer: "",
-      device: "",
-      description: "",
-    };
-  },
-};
+<script setup lang="ts">
+import Item from "@/components/ActivityHistoryItem.vue";
+const itemCount = ref(4);
+const time = ref("سیبسیب");
+const date = ref("");
+const ip = ref("");
+const os = ref("");
+const browser = ref("");
+const device = ref("");
+const description = ref("");
 </script>
