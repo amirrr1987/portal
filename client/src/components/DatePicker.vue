@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import DatePicker from "vue-persian-datetime-picker";
-import IconDate from "@/icons/Main/IconCalendar";
+import IconDate from "@/icons/Main/IconCalendar.vue";
 
 interface Props {
   value?: string | null;
