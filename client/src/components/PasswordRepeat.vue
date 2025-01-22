@@ -26,23 +26,23 @@
 import { ref, computed } from "vue";
 
 interface Props {
-  value?: string;
-  forCheck?: string;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  value?: string | undefined;
+  forCheck?: string | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: "",
-  forCheck: "",
+  value: undefined,
+  forCheck: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits(["input"]);
