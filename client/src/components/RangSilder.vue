@@ -17,7 +17,6 @@
         <v-slider
           max="100"
           min="0"
-          v-model="totalAmount"
           track-color="secondary"
           color="gray"
           class="mt-2"
@@ -51,51 +50,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 interface Props {
-  value?: number | null;
-  sliderCols?: string;
-  sliderSm?: string;
-  sliderMd?: string;
-  sliderLg?: string;
-  sliderXl?: string;
-  boxCols?: string;
-  boxSm?: string;
-  boxMd?: string;
-  boxLg?: string;
-  boxXl?: string;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  value?: number | undefined;
+  sliderCols?: string | undefined;
+  sliderSm?: string | undefined;
+  sliderMd?: string | undefined;
+  sliderLg?: string | undefined;
+  sliderXl?: string | undefined;
+  boxCols?: string | undefined;
+  boxSm?: string | undefined;
+  boxMd?: string | undefined;
+  boxLg?: string | undefined;
+  boxXl?: string | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: null,
+  value: undefined,
   sliderCols: "12",
-  sliderSm: null,
-  sliderMd: null,
-  sliderLg: null,
-  sliderXl: null,
+  sliderSm: undefined,
+  sliderMd: undefined,
+  sliderLg: undefined,
+  sliderXl: undefined,
   boxCols: "12",
-  boxSm: null,
-  boxMd: null,
-  boxLg: null,
-  boxXl: null,
+  boxSm: undefined,
+  boxMd: undefined,
+  boxLg: undefined,
+  boxXl: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits(["input"]);
 
-const totalAmount = ref(100);
+const totalAmount = ref<number>(100);
 
-const calcTotal = computed(() => {
+const calcTotal = computed((): number => {
   return 100 - totalAmount.value;
 });
 
