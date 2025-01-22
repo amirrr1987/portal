@@ -15,12 +15,10 @@
     </div>
     <div class="d-flex justify-center align-center">
       <IconLogo width="35" height="35" />
-      <span class="light--text mr-3" v-show="$vuetify.breakpoint.smAndUp"
-        >باشگاه مشتریان</span
-      >
+      <span class="light--text mr-3" v-show="isSmAndUp">باشگاه مشتریان</span>
     </div>
     <div class="d-flex justify-end">
-      <v-menu offset-y class="">
+      <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             color="transparent light--text"
@@ -29,15 +27,17 @@
             v-on="on"
           >
             <span><IconDropdown width="10" height="10" /></span>
-            <span class="mx-3 white--text text-lowercase vira-en">{{ username }}</span>
+            <span class="mx-3 white--text text-lowercase vira-en">{{
+              username
+            }}</span>
             <span><IconProfile width="25" height="25" /></span>
           </v-btn>
         </template>
         <v-list>
           <v-list-item v-if="isLoggedIn">
-            <v-list-item-title class="text-center"
-              ><a @click.prevent="logout">خروج</a></v-list-item-title
-            >
+            <v-list-item-title class="text-center">
+              <a @click.prevent="logout">خروج</a>
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -45,54 +45,32 @@
   </v-app-bar>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
+import { useAuthStore } from "@/stores/authStore";
 import IconLogo from "@/icons/Navbar/IconLogo";
 import IconDropdown from "@/icons/Navbar/IconDropdown";
 import IconProfile from "@/icons/Navbar/IconProfile";
-export default {
-  name: "Navbar",
-  components: {
-    IconLogo,
-    IconDropdown,
-    IconProfile,
-  },
-  data() {
-    return {
-      // usernamee: null,
-    };
-  },
-  computed: {
-    isLoggedIn() {
-      return this.$store.getters.isLoggedIn;
-    },
-    username() {
-      return this.$store.state.currentUser.username;
-    },
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch("logout");
-      this.$router.push("/login");
-    },
-    openMenu() {
-      this.$parent.drawer = !this.$parent.drawer;
-    },
-  },
-  mounted() {
-    this.$http
-      .get("/" + this.$store.state.privateKey + "/check-token")
-      .then((res) => {
-        this.$store.dispatch("setUserFromToken", res.data.ASREVIRA);
-      })
-      .catch((err) => {
-        if (err.response.status == 403) {
-          this.$store.dispatch("logout");
-          this.$router.push("/login");
-        }
-      });
-  },
+
+const { smAndUp: isSmAndUp } = useDisplay();
+const authStore = useAuthStore();
+const router = useRouter();
+
+const isLoggedIn = computed(() => authStore.isLoggedIn);
+const username = computed(() => authStore.currentUser.username);
+
+const logout = () => {
+  authStore.logout();
+  router.push("/login");
 };
+
+onMounted(() => {
+  authStore.getToken({});
+});
 </script>
+
 <style lang="scss">
 .v-app-bar {
   right: 0 !important;
