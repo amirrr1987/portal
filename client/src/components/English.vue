@@ -1,8 +1,14 @@
 <template>
-  <v-col :cols="cols" :sm="sm" :md="md" :lg="lg" :xl="xl">
+  <v-col
+    :cols="cols"
+    :sm="props.sm"
+    :md="props.md"
+    :lg="props.lg"
+    :xl="props.xl"
+  >
     <v-text-field
       class="vira-ltr vira-input-en"
-      :label="label"
+      :label="props.label"
       :rules="[rules.required, rules.enCharWidthNum]"
       :model-value="props.modelValue"
       required
@@ -12,8 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-
 const props = defineProps({
   label: { type: String, default: null },
   modelValue: { type: String, default: null },
