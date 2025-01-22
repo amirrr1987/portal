@@ -1,1 +1,1 @@
-forCheck
+<template>forCheck</template>
