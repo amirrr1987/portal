@@ -25,7 +25,7 @@ interface Props {
   label?: string;
   appendIcon?: string;
   value?: string;
-  validations?: string[];
+  validations?: string[] | null;
   cols?: string;
   sm?: string | null;
   md?: string | null;
