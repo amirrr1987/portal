@@ -1,11 +1,5 @@
 <template>
-  <v-col
-    :cols="cols"
-    :sm="sm"
-    :md="md"
-    :lg="lg"
-    :xl="xl"
-  >
+  <v-col v-bind="colProps">
     <v-autocomplete
       :disabled="isUpdating"
       :items="acceptors"
@@ -13,71 +7,79 @@
       :label="label"
       item-text="name"
       item-value="_id"
-      :value="value"
+      :model-value="modelValue"
       :rules="[rules.required]"
       required
       auto-select-first
       clearable
-      @input="$emit('input', $event)"
+      @update:model-value="updateModelValue"
     />
   </v-col>
 </template>
 
-<script lang="ts">
-export default {
-  name: "Acceptors",
+<script setup lang="ts">
+import { ref, watch, onBeforeMount, computed } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+import axios from "axios";
 
-  props: {
-    value: { type: String, default: null },
-    label: { type: String, default: "" },
-    cols: { type: String, default: "12" },
-    sm: { type: String, default: null },
-    md: { type: String, default: null },
-    lg: { type: String, default: null },
-    xl: { type: String, default: null },
-  },
-emits: ['input'],
-  data() {
-    return {
-      autoUpdate: true,
-      isUpdating: false,
-      acceptors: [],
-      rules: {
-        required: (value) => !!value || "این فیلد الزامی است",
-      },
-    };
-  },
+interface Props {
+  modelValue?: string;
+  label?: string;
+  cols?: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
+}
 
-  watch: {
-    isUpdating(val) {
-      if (val) {
-        setTimeout(() => (this.isUpdating = false), 3000);
-      }
-    },
-  },
-  beforeMount() {
-    this.getAcceptorsData();
-  },
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: null,
+  label: "",
+  cols: "12",
+  sm: null,
+  md: null,
+  lg: null,
+  xl: null,
+});
 
-  methods: {
-    getAcceptorsData() {
-      return new Promise((resolve, reject) => {
-        this.$http
-          .get(`${this.$privateKey}/accepter`)
-          .then((res) => {
-            this.acceptors = res.data.ASREVIRA.docs;
+const emit = defineEmits(["update:modelValue"]);
 
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    },
-    remove(item) {
-      const index = this.friends.indexOf(item.name);
-      if (index >= 0) this.friends.splice(index, 1);
-    },
-  },
+const authStore = useAuthStore();
+const isUpdating = ref(false);
+const acceptors = ref<any[]>([]);
+
+const colProps = computed(() => ({
+  cols: props.cols,
+  sm: props.sm,
+  md: props.md,
+  lg: props.lg,
+  xl: props.xl,
+}));
+
+const rules = {
+  required: (value: any) => !!value || "این فیلد الزامی است",
+};
+
+const updateModelValue = (value: string) => {
+  emit("update:modelValue", value);
+};
+
+watch(isUpdating, (val) => {
+  if (val) {
+    setTimeout(() => (isUpdating.value = false), 3000);
+  }
+});
+
+onBeforeMount(() => {
+  getAcceptorsData();
+});
+
+const getAcceptorsData = async () => {
+  try {
+    const response = await axios.get(`${authStore.privateKey}/accepter`);
+    acceptors.value = response.data.ASREVIRA.docs;
+  } catch (err) {
+    console.error(err);
+  }
 };
 </script>
