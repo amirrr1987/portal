@@ -4,14 +4,6 @@
   </v-card>
 </template>
 
-<script>
-import Chart from "@/components/Chart";
-export default {
-  name: "WalletTransaction",
-  components: {
-    Chart,
-  },
-};
+<script setup lang="ts">
+import Chart from "@/components/Chart.vue";
 </script>
-
-<style></style>
