@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { Line } from "vue-chartjs";
 import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
@@ -35,5 +34,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <canvas ref="chartRef"></canvas>
+  <canvas ref="chartRef" />
 </template>
