@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WalletModule } from './wallet/wallet.module';
 import { FactorModule } from './factor/factor.module';
-import { DiscountModule } from './discount/discount.module';
 import { TicketModule } from './ticket/ticket.module';
 import { ViolationModule } from './violation/violation.module';
 import { TransferModule } from './transfer/transfer.module';
@@ -24,7 +23,6 @@ import { CommentModule } from './comment/comment.module';
     }),
     WalletModule,
     FactorModule,
-    DiscountModule,
     TicketModule,
     ViolationModule,
     TransferModule,
