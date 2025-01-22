@@ -29,23 +29,23 @@ interface State {
 }
 
 interface Props {
-  value?: number | null;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
-  countryId?: number | null;
+  value?: number | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
+  countryId?: number | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: null,
+  value: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
-  countryId: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
+  countryId: undefined,
 });
 
 const emit = defineEmits(["input"]);
