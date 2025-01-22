@@ -20,23 +20,23 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import { EventBus } from "@/mixins/EventBus"; // Ensure EventBus is compatible with Vue 3
 
 interface Props {
-  defaultLat?: string;
-  defaultLng?: string;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  defaultLat?: string | undefined;
+  defaultLng?: string | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  defaultLat: "null",
-  defaultLng: null,
+  defaultLat: undefined,
+  defaultLng: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const map = ref<any>(null);
