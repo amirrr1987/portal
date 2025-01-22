@@ -19,7 +19,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  color: null,
+  color: "",
   label: "عنوان",
 });
 
