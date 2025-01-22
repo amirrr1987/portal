@@ -107,25 +107,25 @@ interface Props {
   cols?: string;
   required?: boolean;
   imgName?: string;
-  imgSrc?: string;
+  imgSrc?: string | undefined;
   remove?: boolean;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
   validated?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   cols: "12",
   required: false,
-  imgName: null,
-  imgSrc: "",
+  imgName: "",
+  imgSrc: undefined,
   remove: true,
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
   validated: false,
 });
 
