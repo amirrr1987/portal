@@ -13,8 +13,8 @@
       :label="props.label"
       :rules="[rules.required]"
       :model-value="props.value"
-      @update:model-value="(event) => emit('input', event)"
       required
+      @update:model-value="(event) => emit('input', event)"
     />
   </v-col>
 </template>
@@ -23,29 +23,29 @@
 import { defineProps, defineEmits } from "vue";
 
 interface Props {
-  label?: string;
-  value?: string | null;
+  label?: string | undefined;
+  value?: string | undefined;
   items?: any[];
-  itemValue?: number | null;
-  itemText?: string;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  itemValue: string | undefined;
+  itemText?: string | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   label: "آدرس",
-  value: null,
-  items: null,
-  itemValue: null,
+  value: undefined,
+  items: undefined,
+  itemValue: undefined,
   itemText: "",
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits(["input"]);
