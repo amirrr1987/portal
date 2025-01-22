@@ -24,35 +24,35 @@
 import { computed } from "vue";
 
 interface Props {
-  label?: string;
-  counter?: string;
+  label?: string | undefined;
+  counter?: string | undefined;
   value?: number;
-  appendIcon?: string;
-  append?: string;
-  cols?: string;
+  appendIcon?: string | undefined;
+  append?: string | undefined;
+  cols?: string | undefined;
   minCount?: number;
   maxCount?: number;
-  validations?: string[];
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  validations?: string[] | null;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: null,
-  counter: null,
-  value: null,
-  appendIcon: null,
-  append: null,
+  label: undefined,
+  counter: undefined,
+  value: undefined,
+  appendIcon: undefined,
+  append: undefined,
   cols: "12",
-  minCount: null,
-  maxCount: null,
-  validations: [],
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  minCount: undefined,
+  maxCount: undefined,
+  validations: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits<{
