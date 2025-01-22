@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import IconDelete from "@/icons/Main/IconDelete";
+import IconDelete from "@/icons/Main/IconDelete.vue";
 
 interface Props {
   label?: string;
