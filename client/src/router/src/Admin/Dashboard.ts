@@ -1,5 +1,5 @@
-import Dashboard from "@/views/Admin/src/Dashboard";
-import List from "@/pages/Admin/Dashboard/Dashboard";
+import Dashboard from "@/views/Admin/src/Dashboard.vue";
+import List from "@/pages/Admin/Dashboard/Dashboard.vue";
 
 export default [
   {
