@@ -60,15 +60,15 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import IconTag from "@/icons/Main/IconTag";
-import IconRemoveCircle from "@/icons/Main/IconRemoveCircle";
+import IconTag from "@/icons/Main/IconTag.vue";
+import IconRemoveCircle from "@/icons/Main/IconRemoveCircle.vue";
 
 interface Props {
-  value?: string;
+  value?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  value: null,
+  value: undefined,
 });
 
 const emit = defineEmits<{
