@@ -1,7 +1,7 @@
 <template>
   <v-main
     :class="{
-      'grey lighten-3': $vuetify.breakpoint.smAndUp,
+      'grey lighten-3': isSmAndUp,
     }"
   >
     <v-container class="py-16 d-flex align-center">
@@ -14,26 +14,12 @@
     <Footer />
   </v-main>
 </template>
-<script>
+
+<script setup lang="ts">
+import { useDisplay } from "vuetify";
 import Footer from "@/layouts/Admin/Footer";
-export default {
-  name: "Main",
-  components: {
-    Footer,
-  },
-  data() {
-    return {
-      password: "",
-      passwordRepeat: "",
-      test: "",
-    };
-  },
-  methods: {
-    chekcers() {
-      return this.chekcer;
-    },
-  },
-};
+
+const { smAndUp: isSmAndUp } = useDisplay();
 </script>
 
 <style lang="scss">
