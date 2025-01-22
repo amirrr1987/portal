@@ -24,23 +24,23 @@
 import { defineProps, defineEmits } from "vue";
 
 interface Props {
-  label?: string;
+  label?: string | undefined;
   value?: string | null;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   label: "جنسیت",
-  value: null,
+  value: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits(["input"]);
