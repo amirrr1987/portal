@@ -9,16 +9,16 @@
     <v-text-field
       type="number"
       pattern="[0-9]"
-      @keypress.e.prevent=""
-      @keypress.+.prevent=""
       :label="props.label"
       :rules="[rules.required, rules.englishNumber]"
       :model-value="props.value"
       class="vira-input-number vira-ltr"
-      @update:model-value="(event) => emit('input', event)"
       required
+      @keypress.e.prevent=""
+      @keypress.+.prevent=""
+      @update:model-value="(event) => emit('input', event)"
     >
-      <template v-slot:append>
+      <template #append>
         {{ props.append }}
       </template>
     </v-text-field>
@@ -29,25 +29,25 @@
 import { defineProps, defineEmits } from "vue";
 
 interface Props {
-  label?: string;
-  append?: string;
-  value?: number | null;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  label?: string | undefined;
+  append?: string | undefined;
+  value?: number | null | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: "",
-  append: "",
-  value: null,
+  label: undefined,
+  append: undefined,
+  value: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits(["input"]);
