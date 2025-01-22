@@ -12,14 +12,14 @@ import Auth from "@/router/src/Auth";
 import Admin from "@/router/src/Admin";
 // import Agent from "@/router/src/Agent";
 // import Acceptor from "@/router/src/Acceptor";
-// import User from "@/router/src/User";
+import User from "@/router/src/User";
 
 const routes = [
   ...Auth,
   ...Admin,
   // ...Agent,
   // ...Acceptor,
-  // ...User
+  ...User
 ];
 
 const router = createRouter({
