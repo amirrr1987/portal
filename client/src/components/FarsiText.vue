@@ -21,25 +21,25 @@
 import { defineProps, defineEmits } from "vue";
 
 interface Props {
-  label?: string;
-  value?: string | null;
-  appendIcon?: string | null;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  label?: string | undefined;
+  value?: string | undefined;
+  appendIcon?: string | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  label: null,
-  value: null,
-  appendIcon: null,
+  label: undefined,
+  value: undefined,
+  appendIcon: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const emit = defineEmits(["input"]);
