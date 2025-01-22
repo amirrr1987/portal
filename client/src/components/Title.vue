@@ -46,17 +46,17 @@ import IconUser2 from "@/icons/Main/IconUser2.vue";
 import IconStore from "@/icons/Main/IconStore.vue";
 
 interface Props {
-  label?: string;
-  cols?: string;
+  label?: string | undefined;
+  cols?: string | undefined;
   iconImages?: boolean;
   iconPapers?: boolean;
   iconUser2?: boolean;
   iconStore?: boolean;
-  iconSize?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  iconSize?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -67,9 +67,9 @@ const props = withDefaults(defineProps<Props>(), {
   iconUser2: false,
   iconStore: false,
   iconSize: "18",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 </script>
