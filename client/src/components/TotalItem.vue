@@ -34,25 +34,25 @@
 import { computed } from "vue";
 
 interface Props {
-  title?: string;
-  total?: number | string;
-  iconBgColor?: string;
-  cols?: string;
-  sm?: string;
-  md?: string;
-  lg?: string;
-  xl?: string;
+  title?: string | undefined;
+  total?: number | undefined;
+  iconBgColor?: string | undefined;
+  cols?: string | undefined;
+  sm?: string | undefined;
+  md?: string | undefined;
+  lg?: string | undefined;
+  xl?: string | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: "title",
   total: 0,
-  iconBgColor: null,
+  iconBgColor: undefined,
   cols: "12",
-  sm: null,
-  md: null,
-  lg: null,
-  xl: null,
+  sm: undefined,
+  md: undefined,
+  lg: undefined,
+  xl: undefined,
 });
 
 const totalFormatted = computed(() => {
